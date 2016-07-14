@@ -2,9 +2,16 @@
 
 import collections
 
+# Stats will be declared as floats at the moment (5 options):
+# (A) Amazing = 0.8
+# (B) Great = 0.6
+# (C) Average = 0.5
+# (D) Bad = 0.4
+# (F) Awful = 0.3
+
 class Queen:
 
-    def __init__(name, sewStat, danceStat, singStat, actStat, humorStat, lipsyncCt = 0):
+    def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, lipsyncCt = 0):
         self.__name = name
         self.__sewStat = sewStat
         self.__danceStat = danceStat
@@ -57,10 +64,16 @@ s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
 
 s4OrderedDict = collections.OrderedDict(s4_key_val_pairs)
 
+s4_preset_contest = ["Alisa Summers", "LaShauwn Beyond", "The Princess", "Madame LaQueer", \
+                         "Milan", "Jiggly Caliente", "Willam", "DiDa Ritz", "Latrice Royale", \
+                         "Chad Michaels", "Phi Phi O'Hara", "Sharon Needles"]
+
+s4_preset_contest_obj = [ Queen("Alissa Summers", 'F', 'D', 'C', 'C', 'C'), \
+                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C')]
 
 def main():
-    for key in s4OrderedDict :
-        print(key)
-
+    for i in range(0,len(s4_preset_contest)) :
+        print(s4_preset_contest[i])
+    print(s4_preset_contest_obj[1].get_name())
 
 main()
