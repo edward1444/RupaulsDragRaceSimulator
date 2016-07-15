@@ -1,6 +1,6 @@
 # George Juarez
 
-import collections, random
+import collections, operator, random
 
 # Stats will be declared as floats at the moment (5 options):
 # (A) Amazing = 0.8
@@ -33,7 +33,7 @@ class Queen:
         return self.__humorStat
     def get_lipsyncCt(self):
         return self.__lipsyncCt
-    
+
     def set_name(self,name):
         self.__name = name
     def set_sewStat(sewStat):
@@ -48,7 +48,7 @@ class Queen:
         self.__humorStat = humorStat
     def set_lipsyncCt(lipsyncCt):
         print("Lipsync count is read-only. Sorry!")
-        
+
     name = property(get_name, set_name)
     sewStat = property (get_sewStat, set_sewStat)
     danceStat = property (get_danceStat, set_danceStat)
@@ -56,7 +56,7 @@ class Queen:
     actStat = property (get_actStat, set_actStat)
     humorStat = property (get_humorStat, set_humorStat)
     lipsyncCt = property (get_lipsyncCt, set_lipsyncCt)
-    
+
 s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
                     ("WTF: Wrestling Trashiest Fighters" , "humor"),
                     ("Glamazons vs. Champions" , "act"),
@@ -99,33 +99,41 @@ def main():
         print(s4_preset_contest[i])
     print(s4_preset_contest_obj[1].get_name())
     '''
-    
+
     keep_going = 'y'
 
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
-    mainChallenge("sew")
+    cList = mainChallenge("sew")
+    for key in cList:
+        print(key, cList[key])
+    print("\n\n")
+    # sorted_cList will be a list of tuples sorted by the second element in each tuple
+    sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
+    for i in range(0,len(sorted_cList)):
+        for j in range(0, len(sorted_cList[i])):
+            print(sorted_cList[i][j])
     '''
     printRemaining()
     miniChallenge()
     mainChallenge("sew")
     '''
-    
+
     '''
     while(keep_going.lower() == 'y'):
         print(0)
         keep_going = input("Enter y to exit: ")
     '''
-    
+
 def printRemaining():
-    
+
     for i in range(0, len(s4_preset_contest_obj)):
         print(s4_preset_contest_obj[i].name)
 
 def countRemaining():
     return len(s4_preset_contest_obj)
-    
+
 def miniChallenge():
     seed = random.randint(0, countRemaining())
     print("The winner of the mini-challenge is: ", s4_preset_contest_obj[seed].name, "!", sep = "")
@@ -139,9 +147,12 @@ def mainChallenge(challengeType):
     for i in range(0, countRemaining()):
         currentQueen = s4_preset_contest_obj[i]
         queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challengeType)
-    for key in queenPerformanceList:
-        print(key, queenPerformanceList[key])
+        # Now that we have all the queen's performances for the main challenge, we should add additional points for the runway
+        runwayScore = stat_to_float(currentQueen.sewStat)
+        queenPerformanceList[currentQueen.name] += runwayScore
         
+    return queenPerformanceList
+
 def getQueenPerformance(currentQueen, challengeType):
     specifiedStat = ''
     if(challengeType == "sew"):
@@ -156,7 +167,7 @@ def getQueenPerformance(currentQueen, challengeType):
         specifiedStat == currentQueen.humorStat
     randPerformance = random.uniform(stat_to_float(specifiedStat), stat_to_float(specifiedStat) + 1)
     return randPerformance
-    
+
 def stat_to_float(specifiedStat):
     return {
             'A' : 0.8,
