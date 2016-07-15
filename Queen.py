@@ -1,6 +1,6 @@
 # George Juarez
 
-import collections
+import collections, random
 
 # Stats will be declared as floats at the moment (5 options):
 # (A) Amazing = 0.8
@@ -19,13 +19,6 @@ class Queen:
         self.__actStat = actStat
         self.__humorStat = humorStat
 
-    def getname(self):
-        return self.__name
-    def setname(self,name):
-        self.__name = name
-
-    name = property(getname, setname)
-    '''
     def get_name(self):
         return self.__name
     def get_sewStat(self):
@@ -40,8 +33,8 @@ class Queen:
         return self.__humorStat
     def get_lipsyncCt(self):
         return self.__lipsyncCt
-
-    def set_name(name):
+    
+    def set_name(self,name):
         self.__name = name
     def set_sewStat(sewStat):
         self.__sewStat = sewStat
@@ -53,9 +46,16 @@ class Queen:
         self.__actStat = actStat
     def set_humorStat(humorStat):
         self.__humorStat = humorStat
-    def get_lipsyncCt(lipsyncCt):
-        self.__lipsyncCt = lipsyncCt
-    '''
+    def set_lipsyncCt(lipsyncCt):
+        print("Lipsync count is read-only. Sorry!")
+        
+    name = property(get_name, set_name)
+    sewStat = property (get_sewStat, set_sewStat)
+    danceStat = property (get_danceStat, set_danceStat)
+    singStat = property (get_singStat, set_singStat)
+    actStat = property (get_actStat, set_actStat)
+    humorStat = property (get_humorStat, set_humorStat)
+    lipsyncCt = property (get_lipsyncCt, set_lipsyncCt)
     
 s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
                     ("WTF: Wrestling Trashiest Fighters" , "humor"),
@@ -106,7 +106,8 @@ def main():
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
     printRemaining()
-
+    miniChallenge()
+    mainChallenge("sew")
     '''
     while(keep_going.lower() == 'y'):
         print(0)
@@ -118,7 +119,34 @@ def printRemaining():
     for i in range(0, len(s4_preset_contest_obj)):
         print(s4_preset_contest_obj[i].name)
 
+def countRemaining():
+    return len(s4_preset_contest_obj)
+    
+def miniChallenge():
+    seed = random.randint(0, countRemaining() - 1)
+    print("The winner of the mini-challenge is: ", s4_preset_contest_obj[seed].name, "!", sep = "")
 
-            
+def mainChallenge(challengeType):
+    # So I guess the plan is to figure out a way to rank the Queens based on their performances
+    # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
+
+    # The first thing we should do is calculate a general ranking based off the type of challenge presented this week
+    queenPerformanceList = []
+    for i in range(0, countRemaining() - 1):
+        currentQueen = s4_preset_contest_obj[i]
+
+def getQueensPerformance(currentQueen, challengeType):
+    specifiedStat = ""
+    if(challengeType == "sew"):
+        specifiedStat = currentQueen.sewStat
+    elif(challengeType == "dance"):
+        specifiedStat = currentQueen.danceStat
+    elif(challengeType == "sing"):
+        specifiedStat = currentQueen.singStat
+    elif(challengeType == "act"):
+        specifiedStat == currentQueen.actStat
+    elif(specifiedStat == "humor"):
+        specifiedStat == currentQueen.humorStat
+        
 #call main
 main()
