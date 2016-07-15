@@ -46,7 +46,8 @@ class Queen:
         self.__actStat = actStat
     def set_humorStat(humorStat):
         self.__humorStat = humorStat
-
+    def get_lipsyncCt(lipsyncCt):
+        self.__lipsyncCt = lipsyncCt
 
 s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
                     ("WTF: Wrestling Trashiest Fighters" , "humor"),
@@ -64,16 +65,46 @@ s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
 
 s4OrderedDict = collections.OrderedDict(s4_key_val_pairs)
 
-s4_preset_contest = ["Alisa Summers", "LaShauwn Beyond", "The Princess", "Madame LaQueer", \
-                         "Milan", "Jiggly Caliente", "Willam", "DiDa Ritz", "Latrice Royale", \
-                         "Chad Michaels", "Phi Phi O'Hara", "Sharon Needles"]
+s4_preset_contest = ["Alisa Summers", "Chad Michaels", "DiDa Ritz", "Jiggly Caliente", \
+                     "LaShauwn Beyond", "Latrice Royale", "Madame LaQueer", "Milan", \
+                     "Phi Phi O'Hara", "The Princess", "Sharon Needles", "Willam" ]
 
-s4_preset_contest_obj = [ Queen("Alissa Summers", 'F', 'D', 'C', 'C', 'C'), \
-                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C')]
+# Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
+s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
+                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B'), \
+                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C'), \
+                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B'), \
+                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C'), \
+                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A'), \
+                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C'),
+                          Queen("Milan", 'C', 'A', 'C', 'C', 'C'), \
+                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B'), \
+                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C'), \
+                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B'), \
+                          Queen("Willam", 'B', 'B', 'A', 'A', 'A') ]
 
 def main():
+    '''
+    # commented out for now
+
     for i in range(0,len(s4_preset_contest)) :
         print(s4_preset_contest[i])
     print(s4_preset_contest_obj[1].get_name())
+    '''
+    
+    keep_going = 'y'
 
+    print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
+          "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
+          " from Season 4 of Rupaul's Drag Race.")
+    printRemaining()
+
+def printRemaining():
+    
+    for i in range(0, len(s4_preset_contest_obj)):
+        print(s4_preset_contest_obj[i].get_name())
+
+
+            
+#call main
 main()
