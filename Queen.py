@@ -19,6 +19,13 @@ class Queen:
         self.__actStat = actStat
         self.__humorStat = humorStat
 
+    def getname(self):
+        return self.__name
+    def setname(self,name):
+        self.__name = name
+
+    name = property(getname, setname)
+    '''
     def get_name(self):
         return self.__name
     def get_sewStat(self):
@@ -48,7 +55,8 @@ class Queen:
         self.__humorStat = humorStat
     def get_lipsyncCt(lipsyncCt):
         self.__lipsyncCt = lipsyncCt
-
+    '''
+    
 s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
                     ("WTF: Wrestling Trashiest Fighters" , "humor"),
                     ("Glamazons vs. Champions" , "act"),
@@ -99,10 +107,16 @@ def main():
           " from Season 4 of Rupaul's Drag Race.")
     printRemaining()
 
+    '''
+    while(keep_going.lower() == 'y'):
+        print(0)
+        keep_going = input("Enter y to exit: ")
+    '''
+    
 def printRemaining():
     
     for i in range(0, len(s4_preset_contest_obj)):
-        print(s4_preset_contest_obj[i].get_name())
+        print(s4_preset_contest_obj[i].name)
 
 
             
