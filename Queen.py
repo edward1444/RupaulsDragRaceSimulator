@@ -71,7 +71,7 @@ s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
                     ("The Final Three", "none"),
                     ("Reunited", "none")]
 
-s4OrderedDict = collections.OrderedDict(s4_key_val_pairs)
+s4_ordered_dict = collections.OrderedDict(s4_key_val_pairs)
 
 s4_preset_contest = ["Alisa Summers", "Chad Michaels", "DiDa Ritz", "Jiggly Caliente", \
                      "LaShauwn Beyond", "Latrice Royale", "Madame LaQueer", "Milan", \
@@ -105,9 +105,13 @@ def main():
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
+    mainChallenge("sew")
+    '''
     printRemaining()
     miniChallenge()
     mainChallenge("sew")
+    '''
+    
     '''
     while(keep_going.lower() == 'y'):
         print(0)
@@ -123,7 +127,7 @@ def countRemaining():
     return len(s4_preset_contest_obj)
     
 def miniChallenge():
-    seed = random.randint(0, countRemaining() - 1)
+    seed = random.randint(0, countRemaining())
     print("The winner of the mini-challenge is: ", s4_preset_contest_obj[seed].name, "!", sep = "")
 
 def mainChallenge(challengeType):
@@ -131,12 +135,15 @@ def mainChallenge(challengeType):
     # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
 
     # The first thing we should do is calculate a general ranking based off the type of challenge presented this week
-    queenPerformanceList = []
-    for i in range(0, countRemaining() - 1):
+    queenPerformanceList = {}
+    for i in range(0, countRemaining()):
         currentQueen = s4_preset_contest_obj[i]
-
-def getQueensPerformance(currentQueen, challengeType):
-    specifiedStat = ""
+        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challengeType)
+    for key in queenPerformanceList:
+        print(key, queenPerformanceList[key])
+        
+def getQueenPerformance(currentQueen, challengeType):
+    specifiedStat = ''
     if(challengeType == "sew"):
         specifiedStat = currentQueen.sewStat
     elif(challengeType == "dance"):
@@ -147,6 +154,17 @@ def getQueensPerformance(currentQueen, challengeType):
         specifiedStat == currentQueen.actStat
     elif(specifiedStat == "humor"):
         specifiedStat == currentQueen.humorStat
-        
+    randPerformance = random.uniform(stat_to_float(specifiedStat), stat_to_float(specifiedStat) + 1)
+    return randPerformance
+    
+def stat_to_float(specifiedStat):
+    return {
+            'A' : 0.8,
+            'B' : 0.6,
+            'C' : 0.5,
+            'D' : 0.4,
+            'F' : 0.3,
+        }.get(specifiedStat,0.0)
+    
 #call main
 main()
