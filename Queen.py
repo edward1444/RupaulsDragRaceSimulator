@@ -9,8 +9,7 @@ import collections, operator, random
 # (D) Bad = 0.4
 # (F) Awful = 0.3
 
-class Queen:
-
+class Queen:  
     def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, lipsyncCt = 0):
         self.__name = name
         self.__sewStat = sewStat
@@ -47,7 +46,7 @@ class Queen:
     def set_humorStat(humorStat):
         self.__humorStat = humorStat
     def set_lipsyncCt(lipsyncCt):
-        print("Lipsync count is read-only. Sorry!")
+        self.__lipsyncCt = lipsyncCt
 
     name = property(get_name, set_name)
     sewStat = property (get_sewStat, set_sewStat)
@@ -57,21 +56,45 @@ class Queen:
     humorStat = property (get_humorStat, set_humorStat)
     lipsyncCt = property (get_lipsyncCt, set_lipsyncCt)
 
-s4_key_val_pairs = [("RuPocalyse Now!" , "sew"),
-                    ("WTF: Wrestling Trashiest Fighters" , "humor"),
-                    ("Glamazons vs. Champions" , "act"),
-                    ("Queens Behind Bars", "act"),
-                    ("Snatch Game", "humor"),
-                    ("Float Your Boat", "sew"),
-                    ("Dragazines", "act"),
-                    ("Frenemies", "sing"),
-                    ("Frock the Vote!", "humor"),
-                    ("DILFs: Dads I'd Like To Frock", "sew"),
-                    ("The Fabulous Bitch Ball", "sew"),
-                    ("The Final Three", "none"),
-                    ("Reunited", "none")]
+#--------------------End of Queen class (yay) -----------------------------
+    
+# fuck this shit, I gotta do this I guess
+class Challenge:
+    def __init__(self,name,challengeType):
+        self.__name = name
+        self.__challengeType = challengeType
 
-s4_ordered_dict = collections.OrderedDict(s4_key_val_pairs)
+    def get_name(self):
+        return self.__name
+    def get_challenge_type(self):
+        return self.__challengeType
+    
+    def set_name(self, name):
+        self.__name = name
+    def set_challenge_type(self, challengeType):
+        self.__challengeType = challengeType
+
+    name = property(get_name, set_name)
+    chalengeType = property(get_challenge_type, set_challenge_type)
+
+#------------------ End of Challenge class (yay^3) -----------------------
+
+s4_challenges = [Challenge("RuPocalypse Now!","sew"), \
+                 Challenge("WTF: Wrestling Trashiest Fighters" , "humor"), \
+                 Challenge("Glamazons vs. Champions", "act"), \
+                 Challenge("Queens Behind Bars", "act"), \
+                 Challenge("Queens Behind Bars", "act"), \
+                 Challenge("Snatch Game", "humor"), \
+                 Challenge("Float Your Boat", "sew"), \
+                 Challenge("Dragazines", "act"), \
+                 Challenge("Frenemies", "sing"), \
+                 Challenge("Frock the Vote!", "humor"), \
+                 Challenge("DILFs: Dads I'd Like To Frock", "sew"), \
+                 Challenge("The Fabulous Bitch Ball", "sew"), \
+                 Challenge("The Final Three", "none"), \
+                 Challenge("Reunited", "none")]    
+
+# s4_ordered_dict = collections.OrderedDict(s4_key_val_pairs)
 
 s4_preset_contest = ["Alisa Summers", "Chad Michaels", "DiDa Ritz", "Jiggly Caliente", \
                      "LaShauwn Beyond", "Latrice Royale", "Madame LaQueer", "Milan", \
@@ -99,13 +122,13 @@ def main():
         print(s4_preset_contest[i])
     print(s4_preset_contest_obj[1].get_name())
     '''
-
+    
     keep_going = 'y'
 
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
-    cList = mainChallenge("sew")
+    cList = mainChallenge("dance")
     for key in cList:
         print(key, cList[key])
     print("\n\n")
@@ -114,6 +137,8 @@ def main():
     for i in range(0,len(sorted_cList)):
         for j in range(0, len(sorted_cList[i])):
             print(sorted_cList[i][j])
+            
+    
     '''
     printRemaining()
     miniChallenge()
