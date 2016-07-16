@@ -60,40 +60,45 @@ class Queen:
 
 # fuck this shit, I gotta do this I guess
 class Challenge:
-    def __init__(self,name,challengeType):
+    def __init__(self,name,challengeType, isElim):
         self.__name = name
         self.__challengeType = challengeType
+        self.__isElim = isElim
 
     def get_name(self):
         return self.__name
     def get_challenge_type(self):
         return self.__challengeType
-
+    def get_isElim(self):
+        return self.__isElim
+    
     def set_name(self, name):
         self.__name = name
     def set_challenge_type(self, challengeType):
         self.__challengeType = challengeType
-
-    name = property(get_name, set_name)
-    chalengeType = property(get_challenge_type, set_challenge_type)
+    def set_isElim(self, isElim):
+        self.__isElim = isElim
+        
+    name = property(get_name, set_name, get_isElim)
+    chalengeType = property(get_challenge_type, set_challenge_type, set_isElim)
 
 #------------------ End of Challenge class (yay^2) -------------------------
 
 # Remember: Challenge = Name, ChallengeType
 
-s4_challenges = [ Challenge("RuPocalypse Now!","sew"), \
-                 Challenge("WTF: Wrestling Trashiest Fighters" , "humor"), \
-                 Challenge("Glamazons vs. Champions", "act"), \
-                 Challenge("Queens Behind Bars", "act"), \
-                 Challenge("Snatch Game", "humor"), \
-                 Challenge("Float Your Boat", "sew"), \
-                 Challenge("Dragazines", "act"), \
-                 Challenge("Frenemies", "sing"), \
-                 Challenge("Frock the Vote!", "humor"), \
-                 Challenge("DILFs: Dads I'd Like To Frock", "sew"), \
-                 Challenge("The Fabulous Bitch Ball", "sew"), \
-                 Challenge("The Final Three", "none"), \
-                 Challenge("Reunited!", "none") ]
+s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
+                 Challenge("WTF: Wrestling Trashiest Fighters" , "humor", True), \
+                 Challenge("Glamazons vs. Champions", "act", True), \
+                 Challenge("Queens Behind Bars", "act", True), \
+                 Challenge("Snatch Game", "humor", True), \
+                 Challenge("Float Your Boat", "sew", True), \
+                 Challenge("Dragazines", "act", True), \
+                 Challenge("Frenemies", "sing", False), \
+                 Challenge("Frock the Vote!", "humor", True), \
+                 Challenge("DILFs: Dads I'd Like To Frock", "sew", True), \
+                 Challenge("The Fabulous Bitch Ball", "sew", True), \
+                 Challenge("The Final Three", "none", False), \
+                 Challenge("Reunited!", "none", False) ]
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
 
@@ -223,7 +228,6 @@ def processTopBottomSafe(cList):
         print("\n\n")
              
         for i in range(0, len(bottomQueens)):
-            print(bottomQueens[i])
-            
+            print(bottomQueens[i])       
 #call main
 main()
