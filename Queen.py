@@ -9,7 +9,7 @@ import collections, operator, random
 # (D) Bad = 0.4
 # (F) Awful = 0.3
 
-class Queen:  
+class Queen:
     def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, lipsyncCt = 0):
         self.__name = name
         self.__sewStat = sewStat
@@ -57,7 +57,7 @@ class Queen:
     lipsyncCt = property (get_lipsyncCt, set_lipsyncCt)
 
 #--------------------End of Queen class (yay) -----------------------------
-    
+
 # fuck this shit, I gotta do this I guess
 class Challenge:
     def __init__(self,name,challengeType):
@@ -68,7 +68,7 @@ class Challenge:
         return self.__name
     def get_challenge_type(self):
         return self.__challengeType
-    
+
     def set_name(self, name):
         self.__name = name
     def set_challenge_type(self, challengeType):
@@ -77,12 +77,13 @@ class Challenge:
     name = property(get_name, set_name)
     chalengeType = property(get_challenge_type, set_challenge_type)
 
-#------------------ End of Challenge class (yay^3) -----------------------
+#------------------ End of Challenge class (yay^2) -------------------------
 
-s4_challenges = [Challenge("RuPocalypse Now!","sew"), \
+# Remember: Challenge = Name, ChallengeType
+
+s4_challenges = [ Challenge("RuPocalypse Now!","sew"), \
                  Challenge("WTF: Wrestling Trashiest Fighters" , "humor"), \
                  Challenge("Glamazons vs. Champions", "act"), \
-                 Challenge("Queens Behind Bars", "act"), \
                  Challenge("Queens Behind Bars", "act"), \
                  Challenge("Snatch Game", "humor"), \
                  Challenge("Float Your Boat", "sew"), \
@@ -92,15 +93,10 @@ s4_challenges = [Challenge("RuPocalypse Now!","sew"), \
                  Challenge("DILFs: Dads I'd Like To Frock", "sew"), \
                  Challenge("The Fabulous Bitch Ball", "sew"), \
                  Challenge("The Final Three", "none"), \
-                 Challenge("Reunited", "none")]    
-
-# s4_ordered_dict = collections.OrderedDict(s4_key_val_pairs)
-
-s4_preset_contest = ["Alisa Summers", "Chad Michaels", "DiDa Ritz", "Jiggly Caliente", \
-                     "LaShauwn Beyond", "Latrice Royale", "Madame LaQueer", "Milan", \
-                     "Phi Phi O'Hara", "The Princess", "Sharon Needles", "Willam" ]
+                 Challenge("Reunited!", "none") ]
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
+
 s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
                           Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B'), \
                           Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C'), \
@@ -121,24 +117,20 @@ def main():
     for i in range(0,len(s4_preset_contest)) :
         print(s4_preset_contest[i])
     print(s4_preset_contest_obj[1].get_name())
-    '''
-    
+
     keep_going = 'y'
 
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
-    cList = mainChallenge("dance")
-    for key in cList:
-        print(key, cList[key])
-    print("\n\n")
+    '''
+    
+    cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
     sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
-    for i in range(0,len(sorted_cList)):
-        for j in range(0, len(sorted_cList[i])):
-            print(sorted_cList[i][j])
-            
+    processTopBottomSafe(sorted_cList)
     
+
     '''
     printRemaining()
     miniChallenge()
@@ -151,31 +143,29 @@ def main():
         keep_going = input("Enter y to exit: ")
     '''
 
-def printRemaining():
+def printRemaining(contest_obj):
+    for i in range(0, len(contest_obj)):
+        print(contest_obj.name)
 
-    for i in range(0, len(s4_preset_contest_obj)):
-        print(s4_preset_contest_obj[i].name)
+def countRemaining(contest_obj):
+    return len(contest_obj)
 
-def countRemaining():
-    return len(s4_preset_contest_obj)
+def miniChallenge(contest_obj):
+    seed = random.randint(0, countRemaining(contest_obj))
+    print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
 
-def miniChallenge():
-    seed = random.randint(0, countRemaining())
-    print("The winner of the mini-challenge is: ", s4_preset_contest_obj[seed].name, "!", sep = "")
-
-def mainChallenge(challengeType):
+def mainChallenge(contest_obj,challengeType):
     # So I guess the plan is to figure out a way to rank the Queens based on their performances
     # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
 
     # The first thing we should do is calculate a general ranking based off the type of challenge presented this week
     queenPerformanceList = {}
-    for i in range(0, countRemaining()):
-        currentQueen = s4_preset_contest_obj[i]
+    for i in range(0, countRemaining(contest_obj)):
+        currentQueen = contest_obj[i]
         queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challengeType)
         # Now that we have all the queen's performances for the main challenge, we should add additional points for the runway
         runwayScore = stat_to_float(currentQueen.sewStat)
         queenPerformanceList[currentQueen.name] += runwayScore
-        
     return queenPerformanceList
 
 def getQueenPerformance(currentQueen, challengeType):
@@ -201,6 +191,39 @@ def stat_to_float(specifiedStat):
             'D' : 0.4,
             'F' : 0.3,
         }.get(specifiedStat,0.0)
+
+def processTopBottomSafe(cList):
     
+    # REMINDER: topQueens, safeQueens, and bottomQueens are DESCENDING, so that means topQueens[0] is the winner of the challenge
+    # bottomQueens[0] is "LOW" and bottomQueens[1] and bottomQueens[2] are the "BTM2"
+    # safeQueens order doesn't really matter tbh
+    
+    topQueens = []
+    safeQueens = []
+    bottomQueens = []
+    
+    if( len(cList) >= 8 ):
+        for i in range(2,-1,-1):
+            bottomQueens.append(cList[i][0])
+            del cList[i]
+        for i in range(len(cList) - 1, len(cList) - 4, -1):
+            topQueens.append(cList[i][0])
+            del cList[i]
+        for i in range(len(cList) - 1, -1, -1):
+            safeQueens.append(cList[i][0])
+
+        for i in range(0, len(topQueens)):
+            print(topQueens[i])                      
+                            
+        print("\n\n")
+        
+        for i in range(0, len(safeQueens)):
+             print(safeQueens[i]) 
+    
+        print("\n\n")
+             
+        for i in range(0, len(bottomQueens)):
+            print(bottomQueens[i])
+            
 #call main
 main()
