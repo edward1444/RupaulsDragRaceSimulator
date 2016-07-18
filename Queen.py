@@ -71,29 +71,54 @@ class Challenge:
         return self.__challengeType
     def get_isElim(self):
         return self.__isElim
-    
+
     def set_name(self, name):
         self.__name = name
     def set_challenge_type(self, challengeType):
         self.__challengeType = challengeType
     def set_isElim(self, isElim):
         self.__isElim = isElim
-        
-    name = property(get_name, set_name, get_isElim)
-    chalengeType = property(get_challenge_type, set_challenge_type, set_isElim)
+
+    name = property(get_name, set_name)
+    chalengeType = property(get_challenge_type, set_challenge_type)
+    isElim = property(get_isElim, set_isElim)
 
 #------------------ End of Challenge class (yay^2) -------------------------
 
-# Remember: Challenge = Name, ChallengeType
+#------------------- In order to save myself the headache -------------------
+#------------------- Here is a TeamChallenge class, (subclass) --------------
+
+class TeamChallenge(Challenge):
+    def __init__(self, name, challengeType, isElim, teamCount, countIndiv):
+        super(TeamChallenge,self).__init__(name,challengeType, isElim)
+        self.__teamCount = teamCount
+        self.__countIndiv = countIndiv
+
+    def get_teamCount(self):
+        return self.__teamCount
+    def get_countIndiv(self):
+        return self.__countIndiv
+
+    def set_teamCount(self,teamCount):
+        self.__teamCount = teamCount
+    def set_countIndiv(self,countIndiv):
+        self.__countIndiv = countIndiv
+
+    teamCount = property(get_teamCount, set_teamCount)
+    countIndiv = property(get_countIndiv, set_countIndiv)
+
+#------------------ End of TeamChallenge class (yay^3) -----------------------
+
+# Remember: Challenge = Name, ChallengeType, isElim
 
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
-                 Challenge("WTF: Wrestling Trashiest Fighters" , "humor", True), \
-                 Challenge("Glamazons vs. Champions", "act", True), \
-                 Challenge("Queens Behind Bars", "act", True), \
+                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4]), \
+                 TeamChallenge("Glamazons vs. Champions", "act", True, 2, [5,6]), \
+                 TeamChallenge("Queens Behind Bars", "act", True, 2, [5,5]), \
                  Challenge("Snatch Game", "humor", True), \
                  Challenge("Float Your Boat", "sew", True), \
                  Challenge("Dragazines", "act", True), \
-                 Challenge("Frenemies", "sing", False), \
+                 TeamChallenge("Frenemies", "sing", False, 3, [2,2,2]), \
                  Challenge("Frock the Vote!", "humor", True), \
                  Challenge("DILFs: Dads I'd Like To Frock", "sew", True), \
                  Challenge("The Fabulous Bitch Ball", "sew", True), \
@@ -119,28 +144,22 @@ def main():
     '''
     # commented out for now
 
-    for i in range(0,len(s4_preset_contest)) :
-        print(s4_preset_contest[i])
-    print(s4_preset_contest_obj[1].get_name())
-
     keep_going = 'y'
 
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
     '''
-    
+
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
     sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
     processTopBottomSafe(sorted_cList)
-    
 
-    '''
-    printRemaining()
-    miniChallenge()
-    mainChallenge("sew")
-    '''
+    # testcList to test out the changing bounds once len(cList) < 8
+    testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
+    ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
+    processTopBottomSafe(testcList)
 
     '''
     while(keep_going.lower() == 'y'):
@@ -198,15 +217,21 @@ def stat_to_float(specifiedStat):
         }.get(specifiedStat,0.0)
 
 def processTopBottomSafe(cList):
-    
+
     # REMINDER: topQueens, safeQueens, and bottomQueens are DESCENDING, so that means topQueens[0] is the winner of the challenge
     # bottomQueens[0] is "LOW" and bottomQueens[1] and bottomQueens[2] are the "BTM2"
     # safeQueens order doesn't really matter tbh
-    
+
     topQueens = []
     safeQueens = []
     bottomQueens = []
-    
+
+    # We have to make certain cases for bounds once len(cList) < 8
+    # Case 7: 4 top, 3 bottom
+    # Case 6: 3 top, 3 bottom
+    # Case 5: 2 top, 3 bottom
+    # Case 4: 2 top, 2 bottom
+
     if( len(cList) >= 8 ):
         for i in range(2,-1,-1):
             bottomQueens.append(cList[i][0])
@@ -218,16 +243,36 @@ def processTopBottomSafe(cList):
             safeQueens.append(cList[i][0])
 
         for i in range(0, len(topQueens)):
-            print(topQueens[i])                      
-                            
+            print(topQueens[i])
+
         print("\n\n")
-        
+
         for i in range(0, len(safeQueens)):
-             print(safeQueens[i]) 
-    
+             print(safeQueens[i])
+
         print("\n\n")
-             
+
         for i in range(0, len(bottomQueens)):
-            print(bottomQueens[i])       
+            print(bottomQueens[i])
+
+    else :
+        parseTopBtm = nittyGritty(len(cList))
+        for i in range(parseTopBtm[1]-1, -1, -1):
+            bottomQueens.append(cList[i][0])
+
+        for i in range(len(cList) -1, len(cList) - (parseTopBtm[0] + 1), -1):
+            topQueens.append(cList[i][0])
+
+        for i in range(0, len(topQueens)):
+            print(topQueens[i])
+
+def nittyGritty(size):
+    return {
+        4: [2,2],
+        5: [2,3],
+        6: [3,3],
+        7: [4,3],
+    }.get(size, [2,2])
+
 #call main
 main()
