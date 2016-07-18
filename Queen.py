@@ -154,12 +154,12 @@ def main():
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
     sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
-    processTopBottomSafe(sorted_cList)
+    processTopBottomSafe(sorted_cList, True)
 
     # testcList to test out the changing bounds once len(cList) < 8
     testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
     ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
-    processTopBottomSafe(testcList)
+    processTopBottomSafe(testcList, False)
 
     '''
     while(keep_going.lower() == 'y'):
@@ -216,55 +216,43 @@ def stat_to_float(specifiedStat):
             'F' : 0.3,
         }.get(specifiedStat,0.0)
 
-def processTopBottomSafe(cList):
+def processTopBottomSafe(cList, containSafe):
 
     # REMINDER: topQueens, safeQueens, and bottomQueens are DESCENDING, so that means topQueens[0] is the winner of the challenge
     # bottomQueens[0] is "LOW" and bottomQueens[1] and bottomQueens[2] are the "BTM2"
     # safeQueens order doesn't really matter tbh
 
-    topQueens = []
-    safeQueens = []
-    bottomQueens = []
+    topQueens, safeQueens, bottomsQueens = []
+    parseTopBtm = nittyGritty(len(cList))
 
-    # We have to make certain cases for bounds once len(cList) < 8
-    # Case 7: 4 top, 3 bottom
-    # Case 6: 3 top, 3 bottom
-    # Case 5: 2 top, 3 bottom
-    # Case 4: 2 top, 2 bottom
-
-    if( len(cList) >= 8 ):
-        for i in range(2,-1,-1):
-            bottomQueens.append(cList[i][0])
-            del cList[i]
-        for i in range(len(cList) - 1, len(cList) - 4, -1):
-            topQueens.append(cList[i][0])
-            del cList[i]
+    for i in range(parseTopBtm[1] - 1, -1, -1):
+        bottomQueens.append(cList[i][0])
+        del cList[i]
+    for i in range(len(cList) - 1, len(cList) - (parseTopBtm[0] + 1), -1):
+        topQueens.append(cList[i][0])
+        del cList[i]
+    if(containSafe):
         for i in range(len(cList) - 1, -1, -1):
             safeQueens.append(cList[i][0])
-
-        for i in range(0, len(topQueens)):
-            print(topQueens[i])
-
-        print("\n\n")
-
         for i in range(0, len(safeQueens)):
              print(safeQueens[i])
 
-        print("\n\n")
+    print("\n\n")
 
-        for i in range(0, len(bottomQueens)):
-            print(bottomQueens[i])
+    for i in range(0, len(topQueens)):
+        print(topQueens[i])
 
-    else :
-        parseTopBtm = nittyGritty(len(cList))
-        for i in range(parseTopBtm[1]-1, -1, -1):
-            bottomQueens.append(cList[i][0])
+    print("\n\n")
 
-        for i in range(len(cList) -1, len(cList) - (parseTopBtm[0] + 1), -1):
-            topQueens.append(cList[i][0])
+    for i in range(0, len(bottomQueens)):
+        print(bottomQueens[i])
 
-        for i in range(0, len(topQueens)):
-            print(topQueens[i])
+# We have to make certain cases for bounds once len(cList) < 8
+# Case 7: 4 top, 3 bottom
+# Case 6: 3 top, 3 bottom
+# Case 5: 2 top, 3 bottom
+# Case 4: 2 top, 2 bottom
+# Default: 3 top, 3 bottom, rest safe
 
 def nittyGritty(size):
     return {
@@ -272,7 +260,7 @@ def nittyGritty(size):
         5: [2,3],
         6: [3,3],
         7: [4,3],
-    }.get(size, [2,2])
+    }.get(size, [3,3])
 
 #call main
 main()
