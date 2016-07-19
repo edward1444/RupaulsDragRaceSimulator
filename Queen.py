@@ -314,5 +314,14 @@ def lipsync(contest_obj, bottomQueens):
         for j in range(0, len(bottomStats[i])):
             print(bottomStats[i][j])
 
+    baseOut = { bottomStats[0][0] : random.uniform(stat_to_float(bottomStats[0][3]), stat_to_float(bottomStats[0][3]) + 1) ,
+                bottomStats[1][0] : random.uniform(stat_to_float(bottomStats[1][3]), stat_to_float(bottomStats[1][3]) + 1)
+    }
+
+    print("\n\n\n")
+    for key in baseOut:
+        print(key, baseOut[key])
+    # an attempt to implement the said pluses and minuses lel
+
 #call main
 main()
