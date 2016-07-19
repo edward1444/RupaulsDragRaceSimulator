@@ -10,13 +10,15 @@ import collections, operator, random
 # (F) Awful = 0.3
 
 class Queen:
-    def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, lipsyncCt = 0):
+    def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, winCt = 0, lipsyncCt = 0):
         self.__name = name
         self.__sewStat = sewStat
         self.__danceStat = danceStat
         self.__singStat = singStat
         self.__actStat = actStat
         self.__humorStat = humorStat
+        self.__winCt = winCt
+        self.__lipsyncCt = lipsyncCt
 
     def get_name(self):
         return self.__name
@@ -30,6 +32,8 @@ class Queen:
         return self.__actStat
     def get_humorStat(self):
         return self.__humorStat
+    def get_winCt(self):
+        return self.__winCt
     def get_lipsyncCt(self):
         return self.__lipsyncCt
 
@@ -45,6 +49,8 @@ class Queen:
         self.__actStat = actStat
     def set_humorStat(humorStat):
         self.__humorStat = humorStat
+    def set_winCt(lipsyncCt):
+        self.__lipsyncCt = lipsyncCt
     def set_lipsyncCt(lipsyncCt):
         self.__lipsyncCt = lipsyncCt
 
@@ -54,6 +60,7 @@ class Queen:
     singStat = property (get_singStat, set_singStat)
     actStat = property (get_actStat, set_actStat)
     humorStat = property (get_humorStat, set_humorStat)
+    winCt = property (get_winCt, set_winCt)
     lipsyncCt = property (get_lipsyncCt, set_lipsyncCt)
 
 #--------------------End of Queen class (yay) -----------------------------
@@ -127,18 +134,18 @@ s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
 
-s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
-                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B'), \
-                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C'), \
-                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B'), \
-                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C'), \
-                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A'), \
-                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C'),
-                          Queen("Milan", 'C', 'A', 'C', 'C', 'C'), \
-                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B'), \
-                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C'), \
-                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B'), \
-                          Queen("Willam", 'B', 'B', 'A', 'A', 'A') ]
+s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0), \
+                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B', 0, 0), \
+                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C', 0, 0), \
+                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B', 0, 0), \
+                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C', 0, 0), \
+                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A', 0, 0), \
+                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C', 0, 0),
+                          Queen("Milan", 'C', 'A', 'C', 'C', 'C', 0, 0), \
+                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B', 0, 0), \
+                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C', 0, 0), \
+                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B', 0, 0), \
+                          Queen("Willam", 'B', 'B', 'A', 'A', 'A', 0, 0) ]
 
 def main():
     '''
@@ -151,20 +158,18 @@ def main():
           " from Season 4 of Rupaul's Drag Race.")
     '''
 
+
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
     sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
-    processTopBottomSafe(sorted_cList, True)
+    parsed_cList = processTopBottomSafe(sorted_cList, True)
 
+    lipsync(s4_preset_contest_obj, parsed_cList[2])
+    '''
     # testcList to test out the changing bounds once len(cList) < 8
     testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
     ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
     processTopBottomSafe(testcList, False)
-
-    '''
-    while(keep_going.lower() == 'y'):
-        print(0)
-        keep_going = input("Enter y to exit: ")
     '''
 
 def printRemaining(contest_obj):
@@ -222,7 +227,9 @@ def processTopBottomSafe(cList, containSafe):
     # bottomQueens[0] is "LOW" and bottomQueens[1] and bottomQueens[2] are the "BTM2"
     # safeQueens order doesn't really matter tbh
 
-    topQueens, safeQueens, bottomsQueens = []
+    topQueens = []
+    safeQueens = []
+    bottomQueens = []
     parseTopBtm = nittyGritty(len(cList))
 
     for i in range(parseTopBtm[1] - 1, -1, -1):
@@ -247,6 +254,8 @@ def processTopBottomSafe(cList, containSafe):
     for i in range(0, len(bottomQueens)):
         print(bottomQueens[i])
 
+    return [topQueens, safeQueens, bottomQueens]
+
 # We have to make certain cases for bounds once len(cList) < 8
 # Case 7: 4 top, 3 bottom
 # Case 6: 3 top, 3 bottom
@@ -261,6 +270,49 @@ def nittyGritty(size):
         6: [3,3],
         7: [4,3],
     }.get(size, [3,3])
+
+def announceSafeQueens(safeQueens):
+    for i in range(0, len(safeQueens) - 1):
+        print(safeQueens[i], ", ", sep = "", end = "")
+    print(safeQueens[len(safeQueens) - 1], ". You are all safe. You may leave the stage.", sep = "")
+
+def announceWinner(topQueens):
+    print(topQueens[1], ", great job. You are safe!\n", \
+         topQueens[0], ", conDragulations you are the winner of this week's challenge!", sep = "")
+    if(len(topQueens) > 2):
+        print(topQueens[2], ", nice work. You are safe.", sep = "")
+
+def announceBottomQueens(bottomQueens):
+    print(bottomQueens[1], ", I'm sorry my dear but you are up for elimination.")
+    if(len(bottomQueens) > 2):
+        print(bottomQueens[0], "\n.\n.\n.\n.\n.\nYou\n.\n.\nare safe.")
+    print(bottomQueens[2], ", I'm sorry my dear but you are up for elimination.")
+
+# For the actual lipsync, the bottom 2 queens must lipsync for their lives to impress Ru
+# as this is their last chance to save themselves from elimination
+# The rules are: both the Queens' danceStat is used to generate a random number between
+# whatever the stat_to_float generator makes, and +1 of that
+# the winCt will help them, giving them an extra .25 for every win to their final score
+# their lipsyncCt will harm them, giving them a minus .25 for every previous lipsync to their final score
+# the highest of the scores will be safe, and the other is declared the eliminated Queen
+
+def lipsync(contest_obj, bottomQueens):
+    bottomStats = []
+    # TODO: Figure out how to make these 2 for loops merge into one, to find both names
+    # of the bottom 2 queens
+    # UPDATE: oh wait shit
+    for i in range(0, len(contest_obj)):
+        currentQueen = contest_obj[i]
+        if(currentQueen.name == bottomQueens[len(bottomQueens) - 1] ):
+            bottomStats.append([currentQueen.name, currentQueen.danceStat, currentQueen.winCt, currentQueen.lipsyncCt])
+    for i in range(0, len(contest_obj)):
+        currentQueen = contest_obj[i]
+        if(currentQueen.name == bottomQueens[len(bottomQueens) - 2] ):
+            bottomStats.append([currentQueen.name, currentQueen.danceStat, currentQueen.winCt, currentQueen.lipsyncCt])
+
+    for i in range(0, len(bottomStats)):
+        for j in range(0, len(bottomStats[i])):
+            print(bottomStats[i][j])
 
 #call main
 main()
