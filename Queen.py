@@ -158,19 +158,19 @@ def main():
           " from Season 4 of Rupaul's Drag Race.")
     '''
 
-
+    '''
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
     sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
     parsed_cList = processTopBottomSafe(sorted_cList, True)
-
     lipsync(s4_preset_contest_obj, parsed_cList[2])
     '''
+
     # testcList to test out the changing bounds once len(cList) < 8
     testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
     ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
-    processTopBottomSafe(testcList, False)
-    '''
+    parsed_cList = processTopBottomSafe(testcList, False)
+    print(lipsync(s4_preset_contest_obj, parsed_cList[2]), ", sashay away.")
 
 def printRemaining(contest_obj):
     for i in range(0, len(contest_obj)):
@@ -298,6 +298,7 @@ def announceBottomQueens(bottomQueens):
 
 def lipsync(contest_obj, bottomQueens):
     bottomStats = []
+    elimQueen = ""
     # TODO: Figure out how to make these 2 for loops merge into one, to find both names
     # of the bottom 2 queens
     # UPDATE: oh wait shit
@@ -314,14 +315,31 @@ def lipsync(contest_obj, bottomQueens):
         for j in range(0, len(bottomStats[i])):
             print(bottomStats[i][j])
 
-    baseOut = { bottomStats[0][0] : random.uniform(stat_to_float(bottomStats[0][3]), stat_to_float(bottomStats[0][3]) + 1) ,
-                bottomStats[1][0] : random.uniform(stat_to_float(bottomStats[1][3]), stat_to_float(bottomStats[1][3]) + 1)
+    baseOut = { bottomStats[0][0] : random.uniform(stat_to_float(bottomStats[0][1]), stat_to_float(bottomStats[0][1]) + 1) ,
+                bottomStats[1][0] : random.uniform(stat_to_float(bottomStats[1][1]), stat_to_float(bottomStats[1][1]) + 1)
     }
 
     print("\n\n\n")
+
     for key in baseOut:
         print(key, baseOut[key])
+
     # an attempt to implement the said pluses and minuses lel
+
+    baseOut[bottomStats[0][0]] = baseOut[bottomStats[0][0]] + (.25 * bottomStats[0][2]) - (.3 * bottomStats[0][3])
+    baseOut[bottomStats[1][0]] = baseOut[bottomStats[1][0]] + (.25 * bottomStats[1][2]) - (.3 * bottomStats[1][3])
+
+    print("\n\n\n")
+
+    for key in baseOut:
+        print(key, baseOut[key])
+
+    if(baseOut[bottomStats[0][0]] < baseOut[bottomStats[1][0]]):
+        elimQueen = bottomStats[0][0]
+    else:
+        elimQueen = bottomStats[1][0]
+
+    return elimQueen
 
 #call main
 main()
