@@ -170,11 +170,15 @@ def main():
     testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
     ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
     parsed_cList = processTopBottomSafe(testcList, False)
-    print(lipsync(s4_preset_contest_obj, parsed_cList[2]), ", sashay away.")
+    elimQueen = lipsync(s4_preset_contest_obj, parsed_cList[2])
+    print(elimQueen, ",sashay away.", sep = "")
+    print("\n\n\n")
+    deleteQueen(elimQueen, s4_preset_contest_obj)
+    printRemaining(s4_preset_contest_obj)
 
 def printRemaining(contest_obj):
     for i in range(0, len(contest_obj)):
-        print(contest_obj.name)
+        print(contest_obj[i].name)
 
 def countRemaining(contest_obj):
     return len(contest_obj)
@@ -296,6 +300,10 @@ def announceBottomQueens(bottomQueens):
 # their lipsyncCt will harm them, giving them a minus .25 for every previous lipsync to their final score
 # the highest of the scores will be safe, and the other is declared the eliminated Queen
 
+# TODO: find a way to try and access the object again without having to do it through the lipsync function
+# maybe write a seperate search function ?
+# or rewrite how you pass parameters to the function
+
 def lipsync(contest_obj, bottomQueens):
     bottomStats = []
     elimQueen = ""
@@ -340,6 +348,20 @@ def lipsync(contest_obj, bottomQueens):
         elimQueen = bottomStats[1][0]
 
     return elimQueen
+
+'''
+def searchContest_obj(specifiedStat, contest_obj):
+    for i in range(0, countRemaining(contest_obj)):
+        currentQueen = contest_obj[i]
+'''
+
+def deleteQueen(name, contest_obj):
+    for i in range(0, countRemaining(contest_obj)):
+        currentQueen = contest_obj[i]
+        if(name == contest_obj[i].name):
+            del contest_obj[i]
+            break
+    return contest_obj
 
 #call main
 main()
