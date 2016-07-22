@@ -117,6 +117,7 @@ class TeamChallenge(Challenge):
 #------------------ End of TeamChallenge class (yay^3) -----------------------
 
 # Remember: Challenge = Name, ChallengeType, isElim
+# TeamChallenge = Name, ChallengeType, isElim, TeamCount, CoundIndividualsOnEachTeam
 
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
                  TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4]), \
@@ -176,13 +177,17 @@ def main():
     deleteQueen(elimQueen, s4_preset_contest_obj)
     printRemaining(s4_preset_contest_obj)
 
+# Print remaining contestants' names
 def printRemaining(contest_obj):
     for i in range(0, len(contest_obj)):
         print(contest_obj[i].name)
 
+# Count the length of the contestant object list, returns int
 def countRemaining(contest_obj):
     return len(contest_obj)
 
+# Pick a random winner for the mini-challenge, the reason it is random
+# is because in the show, the mini-challenge doesn't affect the Queen's overall weekly score
 def miniChallenge(contest_obj):
     seed = random.randint(0, countRemaining(contest_obj))
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
@@ -200,6 +205,7 @@ def mainChallenge(contest_obj,challengeType):
         runwayScore = stat_to_float(currentQueen.sewStat)
         queenPerformanceList[currentQueen.name] += runwayScore
     return queenPerformanceList
+
 
 def getQueenPerformance(currentQueen, challengeType):
     specifiedStat = ''
@@ -296,7 +302,7 @@ def announceBottomQueens(bottomQueens):
 # as this is their last chance to save themselves from elimination
 # The rules are: both the Queens' danceStat is used to generate a random number between
 # whatever the stat_to_float generator makes, and +1 of that
-# the winCt will help them, giving them an extra .25 for every win to their final score
+# the winCt will help them, giving them an extra .3 for every win to their final score
 # their lipsyncCt will harm them, giving them a minus .25 for every previous lipsync to their final score
 # the highest of the scores will be safe, and the other is declared the eliminated Queen
 
@@ -348,12 +354,6 @@ def lipsync(contest_obj, bottomQueens):
         elimQueen = bottomStats[1][0]
 
     return elimQueen
-
-'''
-def searchContest_obj(specifiedStat, contest_obj):
-    for i in range(0, countRemaining(contest_obj)):
-        currentQueen = contest_obj[i]
-'''
 
 def deleteQueen(name, contest_obj):
     for i in range(0, countRemaining(contest_obj)):
