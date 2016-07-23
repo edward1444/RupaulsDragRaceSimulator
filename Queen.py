@@ -159,7 +159,7 @@ def main():
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
     '''
-    sortIntoTeams(s4_preset_contest_obj, [7,5])
+    sortIntoTeams(s4_preset_contest_obj, [2,3,3])
     '''
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
@@ -199,16 +199,20 @@ def miniChallenge(contest_obj):
 # TODO: fix this shit jesus
 def sortIntoTeams(contest_obj, numTeams):
     queenList = []
-    teamShuffledList = [[]]
-    for i in range(0, len(numTeams)):
-        count = numTeams[i]
-        teamShuffledList[i].append(count)
-
-    for i in range(0, len(teamShuffledList[0])):
-        print(teamShuffledList[0][i])
-    '''
+    teamShuffledList = len(numTeams) * [[None]]
+    currentIdx = 0
     for i in range(0, countRemaining(contest_obj)):
         queenList.append(contest_obj[i].name)
+
+    for i in range(0, len(numTeams)):
+        count = numTeams[i]
+        teamShuffledList[i] = count * [0]
+
+    for i in range(0, len(teamShuffledList)):
+        for j in range(0, len(teamShuffledList[i])):
+            print(teamShuffledList[i][j])
+        print("\n\n")
+    '''
     for i in range(0, len(queenList)):
         print(queenList[i])
     shuffle(queenList)
