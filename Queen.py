@@ -121,7 +121,7 @@ class TeamChallenge(Challenge):
 # TeamChallenge = Name, ChallengeType, isElim, TeamCount, CoundIndividualsOnEachTeam
 
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
-                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4]), \
+                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4,4,4]), \
                  TeamChallenge("Glamazons vs. Champions", "act", True, 2, [5,6]), \
                  TeamChallenge("Queens Behind Bars", "act", True, 2, [5,5]), \
                  Challenge("Snatch Game", "humor", True), \
@@ -194,15 +194,27 @@ def miniChallenge(contest_obj):
     seed = random.randint(0, countRemaining(contest_obj))
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
 
+# Figure how to create list of lists, each with a different size that corresponds to
+# the size of each list in numTeams
+# TODO: fix this shit jesus
 def sortIntoTeams(contest_obj, numTeams):
     queenList = []
     teamShuffledList = [[]]
+    for i in range(0, len(numTeams)):
+        count = numTeams[i]
+        teamShuffledList[i].append(count)
+
+    for i in range(0, len(teamShuffledList[0])):
+        print(teamShuffledList[0][i])
+    '''
     for i in range(0, countRemaining(contest_obj)):
         queenList.append(contest_obj[i].name)
     for i in range(0, len(queenList)):
         print(queenList[i])
     shuffle(queenList)
-
+    for i in range(0, len(numTeams)):
+        for j in range(0, len(numTeams[i])):
+'''
 # MainChallenge(contestant object, challenge object)
 # calculate general ranking based off the type of challenge presented this week
 # returns a unordered dictionary with the Queen's name as the key and their score as the value
