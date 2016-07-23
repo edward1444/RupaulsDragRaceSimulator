@@ -1,6 +1,7 @@
 # George Juarez
 
 import collections, operator, random
+from random import shuffle
 
 # Stats will be declared as floats at the moment (5 options):
 # (A) Amazing = 0.8
@@ -158,7 +159,7 @@ def main():
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
     '''
-
+    sortIntoTeams(s4_preset_contest_obj, [7,5])
     '''
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
@@ -167,6 +168,7 @@ def main():
     lipsync(s4_preset_contest_obj, parsed_cList[2])
     '''
 
+    '''
     # testcList to test out the changing bounds once len(cList) < 8
     testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
     ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
@@ -176,7 +178,7 @@ def main():
     print("\n\n\n")
     deleteQueen(elimQueen, s4_preset_contest_obj)
     printRemaining(s4_preset_contest_obj)
-
+    '''
 # Print remaining contestants' names
 def printRemaining(contest_obj):
     for i in range(0, len(contest_obj)):
@@ -192,20 +194,34 @@ def miniChallenge(contest_obj):
     seed = random.randint(0, countRemaining(contest_obj))
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
 
-def mainChallenge(contest_obj,challengeType):
+def sortIntoTeams(contest_obj, numTeams):
+    queenList = []
+    teamShuffledList = [[]]
+    for i in range(0, countRemaining(contest_obj)):
+        queenList.append(contest_obj[i].name)
+    for i in range(0, len(queenList)):
+        print(queenList[i])
+    shuffle(queenList)
+
+# MainChallenge(contestant object, challenge object)
+# calculate general ranking based off the type of challenge presented this week
+# returns a unordered dictionary with the Queen's name as the key and their score as the value
+# TODO: figure out how to alter this so it takes TeamChallenges into account
+def mainChallenge(contest_obj,challenge_obj):
     # So I guess the plan is to figure out a way to rank the Queens based on their performances
     # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
-
-    # The first thing we should do is calculate a general ranking based off the type of challenge presented this week
     queenPerformanceList = {}
     for i in range(0, countRemaining(contest_obj)):
         currentQueen = contest_obj[i]
-        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challengeType)
+        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challenge_obj.challengeType)
         # Now that we have all the queen's performances for the main challenge, we should add additional points for the runway
         runwayScore = stat_to_float(currentQueen.sewStat)
         queenPerformanceList[currentQueen.name] += runwayScore
     return queenPerformanceList
 
+
+def teamMainChallenge(queenperformanceList, teamChallengeObj):
+    print(0)
 
 def getQueenPerformance(currentQueen, challengeType):
     specifiedStat = ''
