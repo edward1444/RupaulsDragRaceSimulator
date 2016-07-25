@@ -121,7 +121,7 @@ class TeamChallenge(Challenge):
 # TeamChallenge = Name, ChallengeType, isElim, TeamCount, CoundIndividualsOnEachTeam
 
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
-                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4,4,4]), \
+                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4]), \
                  TeamChallenge("Glamazons vs. Champions", "act", True, 2, [5,6]), \
                  TeamChallenge("Queens Behind Bars", "act", True, 2, [5,5]), \
                  Challenge("Snatch Game", "humor", True), \
@@ -159,7 +159,12 @@ def main():
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
     '''
-    sortIntoTeams(s4_preset_contest_obj, [2,3,3])
+    teams = sortIntoTeams(s4_preset_contest_obj, [7,5])
+    for i in range(0, len(teams[0])):
+        print(teams[0][i])
+    print("\n\n")
+    for i in range(0, len(teams[1])):
+        print(teams[1][i])
     '''
     cList = mainChallenge(s4_preset_contest_obj,"humor")
     # sorted_cList will be a list of tuples sorted by the second element in each tuple
@@ -194,31 +199,21 @@ def miniChallenge(contest_obj):
     seed = random.randint(0, countRemaining(contest_obj))
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
 
-# Figure how to create list of lists, each with a different size that corresponds to
-# the size of each list in numTeams
-# TODO: fix this shit jesus
+# shoutout to @Borealid from stackoverflow who wrote this for me because i was too dumb
+# to do it lmao, returns a list of list of different sizes, each of them have shuffled
+# Queens' names
 def sortIntoTeams(contest_obj, numTeams):
-    queenList = []
-    teamShuffledList = len(numTeams) * [[None]]
-    currentIdx = 0
-    for i in range(0, countRemaining(contest_obj)):
-        queenList.append(contest_obj[i].name)
+    # Create a randomly-ordered copy of the contestants' names
+    random_contestants = [x.name for x in contest_obj]
+    random.shuffle(random_contestants)
+    result = []
+    for teamsize in numTeams:
+        # Take the first <teamsize> contestants from the list
+        result.append(random_contestants[:teamsize])
+        # Remove those contestants, since they now have a team
+        random_contestants = random_contestants[teamsize:]
+    return result
 
-    for i in range(0, len(numTeams)):
-        count = numTeams[i]
-        teamShuffledList[i] = count * [0]
-
-    for i in range(0, len(teamShuffledList)):
-        for j in range(0, len(teamShuffledList[i])):
-            print(teamShuffledList[i][j])
-        print("\n\n")
-    '''
-    for i in range(0, len(queenList)):
-        print(queenList[i])
-    shuffle(queenList)
-    for i in range(0, len(numTeams)):
-        for j in range(0, len(numTeams[i])):
-'''
 # MainChallenge(contestant object, challenge object)
 # calculate general ranking based off the type of challenge presented this week
 # returns a unordered dictionary with the Queen's name as the key and their score as the value
