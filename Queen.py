@@ -88,7 +88,7 @@ class Challenge:
         self.__isElim = isElim
 
     name = property(get_name, set_name)
-    chalengeType = property(get_challenge_type, set_challenge_type)
+    challengeType = property(get_challenge_type, set_challenge_type)
     isElim = property(get_isElim, set_isElim)
 
 #------------------ End of Challenge class (yay^2) -------------------------
@@ -150,28 +150,31 @@ s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0),
                           Queen("Willam", 'B', 'B', 'A', 'A', 'A', 0, 0) ]
 
 def main():
-    '''
-    # commented out for now
 
     keep_going = 'y'
-
+    s4_obj_COPY = s4_preset_contest_obj
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4. \nHere are the following contestants" \
           " from Season 4 of Rupaul's Drag Race.")
-    '''
-    teams = sortIntoTeams(s4_preset_contest_obj, [7,5])
-    for i in range(0, len(teams[0])):
-        print(teams[0][i])
-    print("\n\n")
-    for i in range(0, len(teams[1])):
-        print(teams[1][i])
-    '''
-    cList = mainChallenge(s4_preset_contest_obj,"humor")
-    # sorted_cList will be a list of tuples sorted by the second element in each tuple
-    sorted_cList = sorted(cList.items(), key = operator.itemgetter(1))
-    parsed_cList = processTopBottomSafe(sorted_cList, True)
-    lipsync(s4_preset_contest_obj, parsed_cList[2])
-    '''
+    printRemaining(s4_obj_COPY)
+
+    while(keep_going.lower() == 'y'):
+        keep_going = sanitised_input("Would you like to continue? [y/n]:", str.lower, range_=('y','n'))
+        if(keep_going == 'n'):
+            print("Bye.")
+            break
+        else:
+            print("This week's Challenge will be:", s4_challenges[0].name)
+            miniChallenge(s4_obj_COPY)
+            results = mainChallenge(s4_obj_COPY, s4_challenges[0])
+            sortedResults = sorted(results.items(), key = operator.itemgetter(1))
+            parsedResults = processTopBottomSafe(sortedResults, True)
+            announceSafeQueens(parsedResults[1])
+            announceWinner(parsedResults[0])
+            announceBottomQueens(parsedResults[2])
+            loser = lipsync(s4_obj_COPY,parsedResults[2])
+            s4_obj_COPY = deleteQueen(loser, s4_obj_COPY)
+            printRemaining(s4_obj_COPY)
 
     '''
     # testcList to test out the changing bounds once len(cList) < 8
@@ -199,6 +202,39 @@ def miniChallenge(contest_obj):
     seed = random.randint(0, countRemaining(contest_obj))
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
 
+# I guess I took this from stackoverflow too...ugh
+# But the only thing atm to be used, in terms of prompt is making sure the user
+# just continues with the flow, y'know ?
+def sanitised_input(prompt, type_=None, min_=None, max_=None, range_=None):
+    if min_ is not None and max_ is not None and max_ < min_:
+        raise ValueError("min_ must be less than or equal to max_.")
+    while True:
+        ui = input(prompt)
+        if type_ is not None:
+            try:
+                ui = type_(ui)
+            except ValueError:
+                print("Input type must be {0}.".format(type_.__name__))
+                continue
+        if max_ is not None and ui > max_:
+            print("Input must be less than or equal to {0}.".format(max_))
+        elif min_ is not None and ui < min_:
+            print("Input must be greater than or equal to {0}.".format(min_))
+        elif range_ is not None and ui not in range_:
+            if isinstance(range_, range):
+                template = "Input must be between {0.start} and {0.stop}."
+                print(template.format(range_))
+            else:
+                template = "Input must be {0}."
+                if len(range_) == 1:
+                    print(template.format(*range_))
+                else:
+                    print(template.format(" or ".join((", ".join(map(str,
+                                                                     range_[:-1])),
+                                                       str(range_[-1])))))
+        else:
+            return ui
+
 # shoutout to @Borealid from stackoverflow who wrote this for me because i was too dumb
 # to do it lmao, returns a list of list of different sizes, each of them have shuffled
 # Queens' names
@@ -218,13 +254,13 @@ def sortIntoTeams(contest_obj, numTeams):
 # calculate general ranking based off the type of challenge presented this week
 # returns a unordered dictionary with the Queen's name as the key and their score as the value
 # TODO: figure out how to alter this so it takes TeamChallenges into account
-def mainChallenge(contest_obj,challenge_obj):
+def mainChallenge(contest_obj,current_challenge_obj):
     # So I guess the plan is to figure out a way to rank the Queens based on their performances
     # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
     queenPerformanceList = {}
     for i in range(0, countRemaining(contest_obj)):
         currentQueen = contest_obj[i]
-        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challenge_obj.challengeType)
+        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, current_challenge_obj.challengeType)
         # Now that we have all the queen's performances for the main challenge, we should add additional points for the runway
         runwayScore = stat_to_float(currentQueen.sewStat)
         queenPerformanceList[currentQueen.name] += runwayScore
@@ -276,20 +312,12 @@ def processTopBottomSafe(cList, containSafe):
         topQueens.append(cList[i][0])
         del cList[i]
     if(containSafe):
+        print("Will the following Queens please step forward. \n")
         for i in range(len(cList) - 1, -1, -1):
             safeQueens.append(cList[i][0])
         for i in range(0, len(safeQueens)):
              print(safeQueens[i])
-
-    print("\n\n")
-
-    for i in range(0, len(topQueens)):
-        print(topQueens[i])
-
-    print("\n\n")
-
-    for i in range(0, len(bottomQueens)):
-        print(bottomQueens[i])
+        print("My dears, you are all safe. You may leave the stage.")
 
     return [topQueens, safeQueens, bottomQueens]
 
