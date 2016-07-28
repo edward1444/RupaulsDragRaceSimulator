@@ -157,6 +157,7 @@ s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 
 
 def main():
 
+    '''
     keep_going = 'y'
     s4_obj_COPY = s4_preset_contest_obj
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
@@ -165,7 +166,7 @@ def main():
     printRemaining(s4_obj_COPY)
 
     while(keep_going.lower() == 'y'):
-        keep_going = sanitised_input("Would you like to continue? [y/n]:", str.lower, range_=('y','n'))
+        keep_going = sanitised_input("Would you like to continue? [y/n]: ", str.lower, range_=('y','n'))
         if(keep_going == 'n'):
             print("Bye.")
             break
@@ -179,20 +180,12 @@ def main():
             announceWinner(parsedResults[0])
             announceBottomQueens(parsedResults[2])
             loser = lipsync(s4_obj_COPY,parsedResults[2])
+            print(loser, ",sashay away.", sep = "")
             s4_obj_COPY = deleteQueen(loser, s4_obj_COPY)
             printRemaining(s4_obj_COPY)
+    '''
+    teamMainChallenge(s4_preset_contest_obj, s4_challenges[1])
 
-    '''
-    # testcList to test out the changing bounds once len(cList) < 8
-    testcList = [("Jiggly Caliente", 0.444444), ("Madame LaQueer", 0.644444), ("Willam", 0.744444), \
-    ("Phi Phi O'Hara",1.444444), ("DiDa Ritz", 2.444444), ("Chad Michaels", 3.444444), ("Sharon Needles", 4.44444)]
-    parsed_cList = processTopBottomSafe(testcList, False)
-    elimQueen = lipsync(s4_preset_contest_obj, parsed_cList[2])
-    print(elimQueen, ",sashay away.", sep = "")
-    print("\n\n\n")
-    deleteQueen(elimQueen, s4_preset_contest_obj)
-    printRemaining(s4_preset_contest_obj)
-    '''
 # Print remaining contestants' names
 def printRemaining(contest_obj):
     for i in range(0, len(contest_obj)):
@@ -258,25 +251,41 @@ def sortIntoTeams(contest_obj, numTeams):
         random_contestants = random_contestants[teamsize:]
     return result
 
-# MainChallenge(contestant object, challenge object)
 # calculate general ranking based off the type of challenge presented this week
 # returns a unordered dictionary with the Queen's name as the key and their score as the value
-# TODO: figure out how to alter this so it takes TeamChallenges into account
-def mainChallenge(contest_obj,current_challenge_obj):
+def mainChallenge(contest_obj,curr_challenge_obj):
     # So I guess the plan is to figure out a way to rank the Queens based on their performances
     # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
     queenPerformanceList = {}
     for i in range(0, countRemaining(contest_obj)):
         currentQueen = contest_obj[i]
-        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, current_challenge_obj.challengeType)
+        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, curr_challenge_obj.challengeType)
         # Now that we have all the queen's performances for the main challenge, we should add additional points for the runway
         runwayScore = stat_to_float(currentQueen.sewStat)
         queenPerformanceList[currentQueen.name] += runwayScore
     return queenPerformanceList
 
+# takes in a contestant object, current team challenge object
+# So now that we have a list of lists that contains the Queens' names (emulating teams)
+# and a performance dictionary with each of the queen's individual scores
+# We need to add the scores together and make sure there is a total Team Score
+def teamMainChallenge(contest_obj, curr_team_challenge_obj):
+    teamQueenList = sortIntoTeams(contest_obj, curr_team_challenge_obj.countIndiv)
+    queenPerformanceList = mainChallenge(contest_obj, curr_team_challenge_obj)
+    teamTotalScores = {}
+    for i in range(0,len(teamQueenList)):
+        teamTotalScores[i] = None
+    # search through the teamQueenList and pick out a current Queen
+    for team in teamQueenList:
+        currentTeam = teamQueenList[team]
+        # now search for the current Queen in the current Team in the performance list
+        for currentMem in teamQueenList[team]:
+            findQueen(currentMem, queenPerformanceList, teamTotalScores[team])
 
-def teamMainChallenge(queenperformanceList, teamChallengeObj):
-    print(0)
+def findQueen(currentMem, queenPerformanceList, currTeamTotalScore):
+    for key in performanceList:
+        if(key == currentMem):
+            currTeamTotalScore[key] = currTeamTotalScore + performanceList[key]
 
 def getQueenPerformance(currentQueen, challengeType):
     specifiedStat = ''
@@ -332,7 +341,6 @@ def processTopBottomSafe(cList, containSafe):
 # Case 5: 2 top, 3 bottom
 # Case 4: 2 top, 2 bottom
 # Default: 3 top, 3 bottom, rest safe
-
 def nittyGritty(size):
     return {
         4: [2,2],
@@ -369,7 +377,6 @@ def announceBottomQueens(bottomQueens):
 # TODO: find a way to try and access the object again without having to do it through the lipsync function
 # maybe write a seperate search function ?
 # or rewrite how you pass parameters to the function
-
 def lipsync(contest_obj, bottomQueens):
     bottomStats = []
     elimQueen = ""
