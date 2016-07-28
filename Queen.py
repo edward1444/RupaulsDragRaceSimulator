@@ -11,13 +11,14 @@ from random import shuffle
 # (F) Awful = 0.3
 
 class Queen:
-    def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, winCt = 0, lipsyncCt = 0):
+    def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, minWinCt = 0, winCt = 0, lipsyncCt = 0):
         self.__name = name
         self.__sewStat = sewStat
         self.__danceStat = danceStat
         self.__singStat = singStat
         self.__actStat = actStat
         self.__humorStat = humorStat
+        self.__minWinCt = minWinCt
         self.__winCt = winCt
         self.__lipsyncCt = lipsyncCt
 
@@ -33,6 +34,8 @@ class Queen:
         return self.__actStat
     def get_humorStat(self):
         return self.__humorStat
+    def get_minWinCt(self):
+        return self.__minWinCt
     def get_winCt(self):
         return self.__winCt
     def get_lipsyncCt(self):
@@ -40,19 +43,21 @@ class Queen:
 
     def set_name(self,name):
         self.__name = name
-    def set_sewStat(sewStat):
+    def set_sewStat(self,sewStat):
         self.__sewStat = sewStat
-    def set_danceStat(danceStat):
+    def set_danceStat(self, danceStat):
         self.__danceStat = danceStat
-    def set_singStat(singStat):
+    def set_singStat(self, singStat):
         self.__singStat = singStat
-    def set_actStat(actStat):
+    def set_actStat(self, actStat):
         self.__actStat = actStat
-    def set_humorStat(humorStat):
+    def set_humorStat(self, humorStat):
         self.__humorStat = humorStat
-    def set_winCt(lipsyncCt):
+    def set_minWinCt(self, minWinCt):
+        self.__minWinCt = minWinCt
+    def set_winCt(self, lipsyncCt):
         self.__lipsyncCt = lipsyncCt
-    def set_lipsyncCt(lipsyncCt):
+    def set_lipsyncCt(self, lipsyncCt):
         self.__lipsyncCt = lipsyncCt
 
     name = property(get_name, set_name)
@@ -61,6 +66,7 @@ class Queen:
     singStat = property (get_singStat, set_singStat)
     actStat = property (get_actStat, set_actStat)
     humorStat = property (get_humorStat, set_humorStat)
+    minWinCt = property (get_minWinCt, set_minWinCt)
     winCt = property (get_winCt, set_winCt)
     lipsyncCt = property (get_lipsyncCt, set_lipsyncCt)
 
@@ -136,18 +142,18 @@ s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
 
-s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0), \
-                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B', 0, 0), \
-                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C', 0, 0), \
-                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B', 0, 0), \
-                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C', 0, 0), \
-                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A', 0, 0), \
-                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C', 0, 0),
-                          Queen("Milan", 'C', 'A', 'C', 'C', 'C', 0, 0), \
-                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B', 0, 0), \
-                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C', 0, 0), \
-                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B', 0, 0), \
-                          Queen("Willam", 'B', 'B', 'A', 'A', 'A', 0, 0) ]
+s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 0), \
+                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B', 0, 0, 0), \
+                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C', 0, 0, 0), \
+                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B', 0, 0, 0), \
+                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C', 0, 0, 0), \
+                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A', 0, 0, 0), \
+                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C', 0, 0, 0),
+                          Queen("Milan", 'C', 'A', 'C', 'C', 'C', 0, 0, 0), \
+                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B', 0, 0, 0), \
+                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C', 0, 0, 0), \
+                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B', 0, 0, 0), \
+                          Queen("Willam", 'B', 'B', 'A', 'A', 'A', 0, 0, 0) ]
 
 def main():
 
@@ -165,7 +171,7 @@ def main():
             break
         else:
             print("This week's Challenge will be:", s4_challenges[0].name)
-            miniChallenge(s4_obj_COPY)
+            s4_obj_COPY = miniChallenge(s4_obj_COPY)
             results = mainChallenge(s4_obj_COPY, s4_challenges[0])
             sortedResults = sorted(results.items(), key = operator.itemgetter(1))
             parsedResults = processTopBottomSafe(sortedResults, True)
@@ -201,6 +207,8 @@ def countRemaining(contest_obj):
 def miniChallenge(contest_obj):
     seed = random.randint(0, countRemaining(contest_obj))
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
+    contest_obj[seed].minWinCt += 1
+    return contest_obj
 
 # I guess I took this from stackoverflow too...ugh
 # But the only thing atm to be used, in terms of prompt is making sure the user
@@ -315,9 +323,6 @@ def processTopBottomSafe(cList, containSafe):
         print("Will the following Queens please step forward. \n")
         for i in range(len(cList) - 1, -1, -1):
             safeQueens.append(cList[i][0])
-        for i in range(0, len(safeQueens)):
-             print(safeQueens[i])
-        print("My dears, you are all safe. You may leave the stage.")
 
     return [topQueens, safeQueens, bottomQueens]
 
