@@ -127,7 +127,7 @@ class TeamChallenge(Challenge):
 # TeamChallenge = Name, ChallengeType, isElim, TeamCount, CoundIndividualsOnEachTeam
 
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
-                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4]), \
+                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4,4,4]), \
                  TeamChallenge("Glamazons vs. Champions", "act", True, 2, [5,6]), \
                  TeamChallenge("Queens Behind Bars", "act", True, 2, [5,5]), \
                  Challenge("Snatch Game", "humor", True), \
@@ -265,30 +265,6 @@ def mainChallenge(contest_obj,curr_challenge_obj):
         queenPerformanceList[currentQueen.name] += runwayScore
     return queenPerformanceList
 
-# takes in a contestant object, current team challenge object
-# So now that we have a list of lists that contains the Queens' names (emulating teams)
-# and a performance dictionary with each of the queen's individual scores
-# We need to add the scores together and make sure there is a total Team Score
-def teamMainChallenge(contest_obj, curr_team_challenge_obj):
-    teamQueenList = sortIntoTeams(contest_obj, curr_team_challenge_obj.countIndiv)
-    queenPerformanceList = mainChallenge(contest_obj, curr_team_challenge_obj)
-    teamTotalScores = {}
-    currentTeam = []
-    for i in range(0,len(teamQueenList)):
-        teamTotalScores[i] = None
-    # search through the teamQueenList and pick out a current Queen
-    for team in teamQueenList:
-        currentTeam.append(team)
-        # now search for the current Queen in the current Team in the performance list
-        for currentMem in currentTeam:
-            findQueen(currentMem, queenPerformanceList, currentTeam)
-        del currentTeam[:]
-        
-def findQueen(currentMem, performanceList, currTeamTotalScore):
-    for key in performanceList:
-        if(key == currentMem):
-            currTeamTotalScore[key] = currTeamTotalScore + performanceList[key]
-
 def getQueenPerformance(currentQueen, challengeType):
     specifiedStat = ''
     if(challengeType == "sew"):
@@ -313,12 +289,46 @@ def stat_to_float(specifiedStat):
             'F' : 0.3,
         }.get(specifiedStat,0.0)
 
-def processTopBottomSafe(cList, containSafe):
+# takes in a contestant object, current team challenge object
+# So now that we have a list of lists that contains the Queens' names (emulating teams)
+# and a performance dictionary with each of the queen's individual scores
+# returns a dictionary of Team Total Scores, mirroring the shuffled teamQueenList list
+def teamMainChallenge(contest_obj, curr_team_challenge_obj):
+    teamQueenList = sortIntoTeams(contest_obj, curr_team_challenge_obj.countIndiv)
+    queenPerformanceList = mainChallenge(contest_obj, curr_team_challenge_obj)
+    for key in queenPerformanceList:
+        print(key, queenPerformanceList[key])
+    teamTotalScores = {}
+    counter = 0
+    for i in range(0,len(teamQueenList)):
+        teamTotalScores[i] = 0
+    # search through the teamQueenList and append the current Team to the currentTeam list
+    for currentTeam in teamQueenList:
+        # now search for the current Queen in the current Team in the performance list
+        for currentMem in currentTeam:
+            print(currentMem, "\n")
+            teamTotalScores[counter] = teamTotalScores[counter] + findQueen(currentMem, queenPerformanceList)
+        counter += 1
+        print("-----------------------")
+    for key in teamTotalScores:
+        print(teamTotalScores[key])
 
+# used in conjunction with teamMainChallenge, takes in the currentMember and the queenPerformanceList
+# from there, fill a variable called currTeamTotal to the currentMember that corresponds to the matching
+# names from the queenPerformanceList (Ex: if currentMem = "Jiggly Caliente", the function will search
+# for "Jiggly Caliente in the queenPerformanceList dict and then add Jiggly's corresponding score
+# to the current team's total Score")
+def findQueen(currentMem, queenPerformanceList):
+    currTeamTotal = 0
+    for key in queenPerformanceList:
+        if(key == currentMem):
+            currTeamTotal = currTeamTotal + queenPerformanceList[key]
+    return currTeamTotal
+
+def processTopBottomSafe(cList, containSafe):
     # REMINDER: topQueens, safeQueens, and bottomQueens are DESCENDING, so that means topQueens[0] is the winner of the challenge
     # bottomQueens[0] is "LOW" and bottomQueens[1] and bottomQueens[2] are the "BTM2"
     # safeQueens order doesn't really matter tbh
-
     topQueens = []
     safeQueens = []
     bottomQueens = []
