@@ -273,16 +273,18 @@ def teamMainChallenge(contest_obj, curr_team_challenge_obj):
     teamQueenList = sortIntoTeams(contest_obj, curr_team_challenge_obj.countIndiv)
     queenPerformanceList = mainChallenge(contest_obj, curr_team_challenge_obj)
     teamTotalScores = {}
+    currentTeam = []
     for i in range(0,len(teamQueenList)):
         teamTotalScores[i] = None
     # search through the teamQueenList and pick out a current Queen
     for team in teamQueenList:
-        currentTeam = teamQueenList[team]
+        currentTeam.append(team)
         # now search for the current Queen in the current Team in the performance list
-        for currentMem in teamQueenList[team]:
-            findQueen(currentMem, queenPerformanceList, teamTotalScores[team])
-
-def findQueen(currentMem, queenPerformanceList, currTeamTotalScore):
+        for currentMem in currentTeam:
+            findQueen(currentMem, queenPerformanceList, currentTeam)
+        del currentTeam[:]
+        
+def findQueen(currentMem, performanceList, currTeamTotalScore):
     for key in performanceList:
         if(key == currentMem):
             currTeamTotalScore[key] = currTeamTotalScore + performanceList[key]
