@@ -103,37 +103,31 @@ class Challenge:
 #------------------- Here is a TeamChallenge class, (subclass) --------------
 
 class TeamChallenge(Challenge):
-    def __init__(self, name, challengeType, isElim, teamCount, countIndiv):
+    def __init__(self, name, challengeType, isElim, countIndiv):
         super(TeamChallenge,self).__init__(name,challengeType, isElim)
-        self.__teamCount = teamCount
         self.__countIndiv = countIndiv
 
-    def get_teamCount(self):
-        return self.__teamCount
     def get_countIndiv(self):
         return self.__countIndiv
 
-    def set_teamCount(self,teamCount):
-        self.__teamCount = teamCount
     def set_countIndiv(self,countIndiv):
         self.__countIndiv = countIndiv
 
-    teamCount = property(get_teamCount, set_teamCount)
     countIndiv = property(get_countIndiv, set_countIndiv)
 
 #------------------ End of TeamChallenge class (yay^3) -----------------------
 
 # Remember: Challenge = Name, ChallengeType, isElim
-# TeamChallenge = Name, ChallengeType, isElim, TeamCount, CoundIndividualsOnEachTeam
+# TeamChallenge = Name, ChallengeType, isElim, CountIndividualsOnEachTeam
 
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
-                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, 3, [4,4,4]), \
-                 TeamChallenge("Glamazons vs. Champions", "act", True, 2, [5,6]), \
-                 TeamChallenge("Queens Behind Bars", "act", True, 2, [5,5]), \
+                 TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, [4,4,4]), \
+                 TeamChallenge("Glamazons vs. Champions", "act", True, [5,6]), \
+                 TeamChallenge("Queens Behind Bars", "act", True, [5,5]), \
                  Challenge("Snatch Game", "humor", True), \
                  Challenge("Float Your Boat", "sew", True), \
                  Challenge("Dragazines", "act", True), \
-                 TeamChallenge("Frenemies", "sing", False, 3, [2,2,2]), \
+                 TeamChallenge("Frenemies", "sing", False, [2,2,2]), \
                  Challenge("Frock the Vote!", "humor", True), \
                  Challenge("DILFs: Dads I'd Like To Frock", "sew", True), \
                  Challenge("The Fabulous Bitch Ball", "sew", True), \
@@ -184,7 +178,8 @@ def main():
             s4_obj_COPY = deleteQueen(loser, s4_obj_COPY)
             printRemaining(s4_obj_COPY)
     '''
-    teamMainChallenge(s4_preset_contest_obj, s4_challenges[1])
+    teamQueenList = sortIntoTeams(s4_preset_contest_obj, s4_challenges[1].countIndiv)
+    teamMainChallenge(s4_preset_contest_obj, s4_challenges[1], teamQueenList)
 
 # Print remaining contestants' names
 def printRemaining(contest_obj):
@@ -289,12 +284,11 @@ def stat_to_float(specifiedStat):
             'F' : 0.3,
         }.get(specifiedStat,0.0)
 
-# takes in a contestant object, current team challenge object
-# So now that we have a list of lists that contains the Queens' names (emulating teams)
+# takes in a contestant object, current team challenge object, and
+# a list of lists that contains the Queens' names (emulating teams)
 # and a performance dictionary with each of the queen's individual scores
 # returns a dictionary of Team Total Scores, mirroring the shuffled teamQueenList list
-def teamMainChallenge(contest_obj, curr_team_challenge_obj):
-    teamQueenList = sortIntoTeams(contest_obj, curr_team_challenge_obj.countIndiv)
+def teamMainChallenge(contest_obj, curr_team_challenge_obj, teamQueenList):
     queenPerformanceList = mainChallenge(contest_obj, curr_team_challenge_obj)
     for key in queenPerformanceList:
         print(key, queenPerformanceList[key])
@@ -312,6 +306,7 @@ def teamMainChallenge(contest_obj, curr_team_challenge_obj):
         print("-----------------------")
     for key in teamTotalScores:
         print(teamTotalScores[key])
+    return teamTotalScores
 
 # used in conjunction with teamMainChallenge, takes in the currentMember and the queenPerformanceList
 # from there, fill a variable called currTeamTotal to the currentMember that corresponds to the matching
