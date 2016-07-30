@@ -1,6 +1,6 @@
 # George Juarez - Rupaul's Drag Race Simulator
 
-import collections, operator, random
+import collections, copy, operator, random
 from random import shuffle
 
 # Stats will be declared as floats at the moment (5 options):
@@ -153,14 +153,17 @@ s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 
 def main():
     keep_going = 'y'
     s4_obj_COPY = s4_preset_contest_obj
-    loserQueens = []
+    loserQueens = [] * len(s4_obj_COPY)
+    isSafeFlag = True
     counter = 0
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
-          "\nFor the moment, we will just be using a preset season: Season 4. \n" \
-          "Here are the following contestants from Season 4 of Rupaul's Drag Race.")
-    printRemaining(s4_obj_COPY)
+          "\nFor the moment, we will just be using a preset season: Season 4.\n")
     while(keep_going.lower() == 'y'):
+        if(countRemaining(s4_obj_COPY) < 8):
+            isSafeFlag = False
         keep_going = sanitised_input("Would you like to continue? [y/n]: ", str.lower, range_=('y','n'))
+        print("\nHere are the remaining contestants: ")
+        printRemaining(s4_obj_COPY)
         if(keep_going == 'n'):
             print("Alright, beat it Queen!")
             break
@@ -169,37 +172,53 @@ def main():
             keep_going = sanitised_input("Time to move forward to the Mini-Challenge! [y to continue]: ", \
             str.lower, range_ = ('y','Y'))
             s4_obj_COPY = miniChallenge(s4_obj_COPY)
-            keep_going = sanitised_input("Time to move forward to the Main-Challenge! [y to continue]:", \
+            keep_going = sanitised_input("Time to move forward to the Main-Challenge! [y to continue]: ", \
                                         str.lower, range_ = ('y', 'Y'))
-            print("We are now calculating the Performance of each of the Queens!")
-            results = mainChallenge(s4_obj_COPY, s4_challenges[counter])
-            sortedResults = sorted(results.items(), key = operator.itemgetter(1))
-            parsedResults = processTopBottomSafe(sortedResults, True)
-            keep_going = sanitised_input("Please wait while we calculate the Runway Scores! [y to continue]: ", \
-                                        str.lower, range_ = ('y', 'Y'))
+            if(type(s4_challenges[counter]) is TeamChallenge):
+                keep_going = sanitised_input("This week is a Team Challenge, so teams must be formed! [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
+                teamQueenList = sortIntoTeams(s4_obj_COPY, s4_challenges[counter].countIndiv)
+                print("These are the teams for the week:")
+                for i in range(0, len(teamQueenList)):
+                    print("On Team ", i + 1, ":", sep = "")
+                    currTeam = teamQueenList[i]
+                    for currMem in range(0, len(currTeam)):
+                        print(currTeam[currMem])
+                    print("\n")
+                totalScores = teamMainChallenge(s4_obj_COPY, s4_challenges[counter], teamQueenList)
+                parsedResults = processTeamTopBottomSafe(teamQueenList, totalScores, isSafeFlag)
+            else:
+                print("We are now calculating the Performance of each of the Queens!")
+                results = mainChallenge(s4_obj_COPY, s4_challenges[counter])
+                sortedResults = sorted(results.items(), key = operator.itemgetter(1))
+                parsedResults = processTopBottomSafe(sortedResults, isSafeFlag)
+                keep_going = sanitised_input("Now we must calculate the Runway Scores! [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
             keep_going = sanitised_input("Time for the moment of truth! [y to continue]: ", \
                                         str.lower, range_ = ('y', 'Y'))
-            announceSafeQueens(parsedResults[1])
+            if(isSafeFlag):
+                announceSafeQueens(parsedResults[1])
             keep_going = sanitised_input("Time to announce the Winner! [y to continue]: ", \
                                         str.lower, range_ = ('y', 'Y'))
             s4_obj_COPY = announceWinner(s4_obj_COPY,parsedResults[0])
             keep_going = sanitised_input("Time to announce the Bottom 2! [y to continue]: ", \
                                         str.lower, range_ = ('y', 'Y'))
             announceBottomQueens(parsedResults[2])
-            keep_going = sanitised_input("The lipsync was intense, but in the end only 1 got to stay! [y to continue]: ", \
+            keep_going = sanitised_input("The lipsync was intense, but the Queens showed no mercy! [y to continue]: ", \
                                         str.lower, range_ = ('y', 'Y'))
             loser = lipsync(s4_obj_COPY,parsedResults[2])
             if(s4_challenges[counter].isElim):
                 print(loser, ",sashay away.", sep = "")
-                loserQueens.extend(getQueenObjFromName(s4_obj_COPY, loser))
+                loserObj = getQueenObjFromName(s4_obj_COPY, loser)
+                loserQueens.append(loserObj)
                 s4_obj_COPY = deleteQueen(loser, s4_obj_COPY)
-            printRemaining(s4_obj_COPY)
+            else:
+                print(loser, ", shantay you also stay! You will compete for one more week!")
+                keep_going = sanitised_input("How intense! [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
             counter += 1
-    '''
 
-    teamQueenList = sortIntoTeams(s4_preset_contest_obj, s4_challenges[3].countIndiv)
-    totalScores = teamMainChallenge(s4_preset_contest_obj, s4_challenges[3], teamQueenList)
-    parsedQueens = processTeamTopBottomSafe(teamQueenList, totalScores, True)
+    '''
     s4_preset_COPY = announceWinner(s4_preset_contest_obj, parsedQueens[0])
     for i in range(0, len(s4_preset_COPY)):
         currentQueen = s4_preset_COPY[i]
@@ -217,7 +236,7 @@ def countRemaining(contest_obj):
 # Pick a random winner for the mini-challenge, the reason it is random
 # is because in the show, the mini-challenge doesn't affect the Queen's overall weekly score
 def miniChallenge(contest_obj):
-    seed = random.randint(0, countRemaining(contest_obj))
+    seed = random.randint(0, countRemaining(contest_obj) - 1)
     print("The winner of the mini-challenge is: ", contest_obj[seed].name, "!", sep = "")
     contest_obj[seed].minWinCt += 1
     return contest_obj
@@ -314,8 +333,6 @@ def stat_to_float(specifiedStat):
 # returns a dictionary of Team Total Scores, mirroring the shuffled teamQueenList list
 def teamMainChallenge(contest_obj, curr_team_challenge_obj, teamQueenList):
     queenPerformanceList = mainChallenge(contest_obj, curr_team_challenge_obj)
-    for key in queenPerformanceList:
-        print(key, queenPerformanceList[key])
     teamTotalScores = {}
     counter = 0
     for i in range(0,len(teamQueenList)):
@@ -324,12 +341,14 @@ def teamMainChallenge(contest_obj, curr_team_challenge_obj, teamQueenList):
     for currentTeam in teamQueenList:
         # now search for the current Queen in the current Team in the performance list
         for currentMem in currentTeam:
-            print(currentMem, "\n")
+            # print(currentMem, "\n")
             teamTotalScores[counter] = teamTotalScores[counter] + findQueen(currentMem, queenPerformanceList)
         counter += 1
-        print("-----------------------")
+        # print("-----------------------")
+    """
     for key in teamTotalScores:
         print(teamTotalScores[key])
+    """
     return teamTotalScores
 
 # used in conjunction with teamMainChallenge, takes in the currentMember and the queenPerformanceList
@@ -369,7 +388,6 @@ def processTeamTopBottomSafe(teamQueenList, teamTotalScores, containSafe):
         for i in range(0, len(teamQueenList)):
             if((i != maxIdx) and (i != minIdx)):
                 safeQueens.extend(teamQueenList[i])
-
     return [topQueens, safeQueens, bottomQueens]
 
 def processTopBottomSafe(cList, containSafe):
@@ -390,7 +408,6 @@ def processTopBottomSafe(cList, containSafe):
     if(containSafe):
         for i in range(len(cList) - 1, -1, -1):
             safeQueens.append(cList[i][0])
-
     return [topQueens, safeQueens, bottomQueens]
 
 # We have to make certain cases for bounds once len(cList) < 8
@@ -419,14 +436,20 @@ def announceWinner(contest_obj, topQueens):
         print(topQueens[2], ", nice work. You are safe.", sep = "")
     winner = getQueenObjFromName(contest_obj, topQueens[0])
     winner.winCt += 1
-    print(winner.name, ":::::: ", winner.winCt)
     return contest_obj
 
 def announceBottomQueens(bottomQueens):
     print(bottomQueens[1], ", I'm sorry my dear but you are up for elimination.")
     if(len(bottomQueens) > 2):
-        print(bottomQueens[0], "\n.\n.\n.\n.\n.\nYou\n.\n.\nare safe.")
-    print(bottomQueens[2], ", I'm sorry my dear but you are up for elimination.")
+        print(bottomQueens[0], ",you,")
+        for count in range(0,5):
+            keep_going = sanitised_input(". [y to continue]: ", \
+            str.lower, range_ = ('y','Y'))
+        keep_going = sanitised_input("are safe. [y to continue]: ", \
+        str.lower, range_ = ('y','Y'))
+        print(bottomQueens[2], ", I'm sorry my dear but you are up for elimination.")
+    else:
+        print(bottomQueens[0], ", I'm sorry my dear but you are also up for elimination.")
 
 def getQueenObjFromName(contest_obj, name):
     for i in range(0, countRemaining(contest_obj)):
