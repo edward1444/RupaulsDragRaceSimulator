@@ -1,6 +1,6 @@
 # George Juarez - Rupaul's Drag Race Simulator
 
-import collections, copy, operator, random
+import collections, operator, random
 from random import shuffle
 
 # Stats will be declared as floats at the moment (5 options):
@@ -119,7 +119,6 @@ class TeamChallenge(Challenge):
 
 # Remember: Challenge = Name, ChallengeType, isElim
 # TeamChallenge = Name, ChallengeType, isElim, CountIndividualsOnEachTeam
-
 s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
                  TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, [4,4,4]), \
                  TeamChallenge("Glamazons vs. Champions", "act", True, [5,6]), \
@@ -134,8 +133,15 @@ s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
                  Challenge("The Final Three", "none", False), \
                  Challenge("Reunited!", "none", False) ]
 
-# Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
+s4_lipsyncs = ["Britney Spears - Toxic", "Donna Summer - Bad Girls", \
+                "Natalie Cole - This Will Be (An Everlasting Love", "Pink - Trouble", \
+                "Madonna - Vogue", "Lady Gaga - Born This Way", "Pam Tillis - Mi Vida Loca (My Crazy Life)",
+                "Marta Wash & RuPaul - It's Raining Men (The Sequel)", \
+                "Gladys Knight - I've Got to Use My Imagination", \
+                "Aretha Franklin - You Make Me Feel Like a Natural Woman", \
+                "Wynonna Judd - No One Else on Earth", "RuPaul - Glamazon"]
 
+# Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
 s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 0), \
                           Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B', 0, 0, 0), \
                           Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C', 0, 0, 0), \
@@ -488,13 +494,12 @@ def lipsync(contest_obj, bottomQueens):
         for j in range(0, len(bottomStats[i])):
             print(bottomStats[i][j])
     """
+    
     baseOut = { bottomStats[0][0] : random.uniform(stat_to_float(bottomStats[0][1]), stat_to_float(bottomStats[0][1]) + 1) ,
                 bottomStats[1][0] : random.uniform(stat_to_float(bottomStats[1][1]), stat_to_float(bottomStats[1][1]) + 1)
     }
 
     """
-    print("\n\n\n")
-
     for key in baseOut:
         print(key, baseOut[key])
     """
@@ -504,8 +509,6 @@ def lipsync(contest_obj, bottomQueens):
     baseOut[bottomStats[1][0]] = baseOut[bottomStats[1][0]] + (.25 * bottomStats[1][2]) - (.3 * bottomStats[1][3])
 
     """
-    print("\n\n\n")
-
     for key in baseOut:
         print(key, baseOut[key])
     """
