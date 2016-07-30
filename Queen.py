@@ -1,4 +1,4 @@
-# George Juarez
+# George Juarez - Rupaul's Drag Race Simulator
 
 import collections, operator, random
 from random import shuffle
@@ -140,6 +140,7 @@ s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 
                           Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B', 0, 0, 0), \
                           Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C', 0, 0, 0), \
                           Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B', 0, 0, 0), \
+                          Queen("Kenya Michaels", 'B', 'A', 'C', 'D', 'B', 0, 0, 0), \
                           Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C', 0, 0, 0), \
                           Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A', 0, 0, 0), \
                           Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C', 0, 0, 0),
@@ -150,7 +151,6 @@ s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 
                           Queen("Willam", 'B', 'B', 'A', 'A', 'A', 0, 0, 0) ]
 
 def main():
-
     '''
     keep_going = 'y'
     s4_obj_COPY = s4_preset_contest_obj
@@ -178,8 +178,9 @@ def main():
             s4_obj_COPY = deleteQueen(loser, s4_obj_COPY)
             printRemaining(s4_obj_COPY)
     '''
-    teamQueenList = sortIntoTeams(s4_preset_contest_obj, s4_challenges[1].countIndiv)
-    teamMainChallenge(s4_preset_contest_obj, s4_challenges[1], teamQueenList)
+    teamQueenList = sortIntoTeams(s4_preset_contest_obj, s4_challenges[3].countIndiv)
+    totalScores = teamMainChallenge(s4_preset_contest_obj, s4_challenges[3], teamQueenList)
+    processTeamTopBottomSafe(teamQueenList, totalScores, True)
 
 # Print remaining contestants' names
 def printRemaining(contest_obj):
@@ -320,6 +321,34 @@ def findQueen(currentMem, queenPerformanceList):
             currTeamTotal = currTeamTotal + queenPerformanceList[key]
     return currTeamTotal
 
+# takes in a list of list that contains queens, emulating teams
+# and a dictionary that contains the total scores for each team
+# now we need to declare the top scores, bottom scores, and safe scores, and then place the
+# queens in the top and bottom teams to the LOW, BTM2 or the Winner
+def processTeamTopBottomSafe(teamQueenList, teamTotalScores, containSafe):
+    topQueens = []
+    safeQueens = []
+    bottomQueens = []
+    maxIdx = max(teamTotalScores, key=teamTotalScores.get)
+    minIdx = min(teamTotalScores, key=teamTotalScores.get)
+
+    random.shuffle(teamQueenList[maxIdx])
+    random.shuffle(teamQueenList[minIdx])
+
+    topQueens = teamQueenList[maxIdx][:3]
+    bottomQueens = teamQueenList[minIdx][:3]
+
+    if(len(teamQueenList[maxIdx]) > 3 or len(teamQueenList[minIdx]) > 3):
+        containSafe = True
+        safeQueens.extend(teamQueenList[maxIdx][3:])
+        safeQueens.extend(teamQueenList[minIdx][3:])
+    if(containSafe):
+        for i in range(0, len(teamQueenList)):
+            if((i != maxIdx) and (i != minIdx)):
+                safeQueens.extend(teamQueenList[i])
+
+    return [topQueens, safeQueens, bottomQueens]
+
 def processTopBottomSafe(cList, containSafe):
     # REMINDER: topQueens, safeQueens, and bottomQueens are DESCENDING, so that means topQueens[0] is the winner of the challenge
     # bottomQueens[0] is "LOW" and bottomQueens[1] and bottomQueens[2] are the "BTM2"
@@ -336,7 +365,6 @@ def processTopBottomSafe(cList, containSafe):
         topQueens.append(cList[i][0])
         del cList[i]
     if(containSafe):
-        print("Will the following Queens please step forward. \n")
         for i in range(len(cList) - 1, -1, -1):
             safeQueens.append(cList[i][0])
 
