@@ -142,52 +142,54 @@ s4_lipsyncs = ["Britney Spears - Toxic", "Donna Summer - Bad Girls", \
                 "Wynonna Judd - No One Else on Earth", "RuPaul - Glamazon"]
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
-s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C', 0, 0, 0), \
-                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B', 0, 0, 0), \
-                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C', 0, 0, 0), \
-                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B', 0, 0, 0), \
-                          Queen("Kenya Michaels", 'B', 'A', 'C', 'D', 'B', 0, 0, 0), \
-                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C', 0, 0, 0), \
-                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A', 0, 0, 0), \
-                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C', 0, 0, 0),
-                          Queen("Milan", 'C', 'A', 'C', 'C', 'C', 0, 0, 0), \
-                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B', 0, 0, 0), \
-                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C', 0, 0, 0), \
-                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B', 0, 0, 0), \
-                          Queen("Willam", 'B', 'B', 'A', 'A', 'A', 0, 0, 0) ]
+s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
+                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B'), \
+                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C'), \
+                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B'), \
+                          Queen("Kenya Michaels", 'B', 'A', 'C', 'D', 'B'), \
+                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C'), \
+                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A'), \
+                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C'),
+                          Queen("Milan", 'C', 'A', 'C', 'C', 'C'), \
+                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B'), \
+                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C'), \
+                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B'), \
+                          Queen("Willam", 'B', 'B', 'A', 'A', 'A') ]
 
 def main():
     keep_going = 'y'
-    s4_obj_COPY = s4_preset_contest_obj
-    loserQueens = [] * len(s4_obj_COPY)
+    testQueenObj = s4_preset_contest_obj
+    loserQueens = [] * len(testQueenObj)
     isSafeFlag = True
     counter = 0
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
           "\nFor the moment, we will just be using a preset season: Season 4.\n")
     while(keep_going.lower() == 'y'):
-        if(countRemaining(s4_obj_COPY) < 8):
+        if(countRemaining(testQueenObj) < 8):
             isSafeFlag = False
         keep_going = sanitised_input("Would you like to continue? [y/n]: ", str.lower, range_=('y','n'))
         print("\nHere are the remaining contestants: ")
-        printRemaining(s4_obj_COPY)
+        printRemaining(testQueenObj)
         if(keep_going == 'n'):
             print("Alright, beat it Queen!")
             break
         else:
             print("This week's Challenge will be:", s4_challenges[counter].name)
-            keep_going = sanitised_input("Time to move forward to the Mini-Challenge! [y to continue]: ", \
-            str.lower, range_ = ('y','Y'))
-            s4_obj_COPY = miniChallenge(s4_obj_COPY)
-            keep_going = sanitised_input("Time to move forward to the Main-Challenge! [y to continue]: ", \
-                                        str.lower, range_ = ('y', 'Y'))
             if((counter == len(s4_challenges) - 2) and s4_challenges[counter].isElim == False):
                 print("The Final 3 are set to compete in Rupaul's new music video!")
-                musicVideoTimeNonElim()
+                musicVideoTimeNonElim(s4_lipsyncs[counter])
+            elif(counter == len(s4_challenges) - 1):
+                grandFinaleTwoRU(testQueenObj, s4_challenges[counter])
             else:
+                keep_going = sanitised_input("Time to move forward to the Mini-Challenge! [y to continue]: ", \
+                                            str.lower, range_ = ('y','Y'))
+                testQueenObj = miniChallenge(testQueenObj)
+                keep_going = sanitised_input("Time to move forward to the Main-Challenge! [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
                 if(type(s4_challenges[counter]) is TeamChallenge):
                     keep_going = sanitised_input("This week is a Team Challenge, so teams must be formed! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-                    teamQueenList = sortIntoTeams(s4_obj_COPY, s4_challenges[counter].countIndiv)
+                    teamQueenList = sortIntoTeams(testQueenObj, s4_challenges[counter].countIndiv)
                     print("These are the teams for the week:")
                     for i in range(0, len(teamQueenList)):
                         print("On Team ", i + 1, ":", sep = "")
@@ -195,11 +197,11 @@ def main():
                         for currMem in range(0, len(currTeam)):
                             print(currTeam[currMem])
                         print("\n")
-                    totalScores = teamMainChallenge(s4_obj_COPY, s4_challenges[counter], teamQueenList)
+                    totalScores = teamMainChallenge(testQueenObj, s4_challenges[counter], teamQueenList)
                     parsedResults = processTeamTopBottomSafe(teamQueenList, totalScores, isSafeFlag)
                 else:
                     print("We are now calculating the Performance of each of the Queens!")
-                    results = mainChallenge(s4_obj_COPY, s4_challenges[counter])
+                    results = mainChallenge(testQueenObj, s4_challenges[counter])
                     sortedResults = sorted(results.items(), key = operator.itemgetter(1))
                     parsedResults = processTopBottomSafe(sortedResults, isSafeFlag)
                     keep_going = sanitised_input("Now we must calculate the Runway Scores! [y to continue]: ", \
@@ -210,31 +212,26 @@ def main():
                     announceSafeQueens(parsedResults[1])
                 keep_going = sanitised_input("Time to announce the Winner! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-                s4_obj_COPY = announceWinner(s4_obj_COPY,parsedResults[0])
+                s4_obj_COPY = announceWinner(testQueenObj,parsedResults[0])
                 keep_going = sanitised_input("Time to announce the Bottom 2! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
                 announceBottomQueens(parsedResults[2])
                 print("The Queens faced off to the lipsync of the week:", s4_lipsyncs[counter])
                 keep_going = sanitised_input("The lipsync was intense, but the Queens showed no mercy! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-                loser = lipsync(s4_obj_COPY,parsedResults[2])
+                loser = lipsync(testQueenObj,parsedResults[2])
                 if(s4_challenges[counter].isElim):
                     print(loser, ",sashay away.", sep = "")
-                    loserObj = getQueenObjFromName(s4_obj_COPY, loser)
+                    loserObj = getQueenObjFromName(testQueenObj, loser)
                     loserQueens.append(loserObj)
-                    s4_obj_COPY = deleteQueen(loser, s4_obj_COPY)
+                    testQueenObj = deleteQueen(loser, testQueenObj)
                 else:
                     print(loser, ", shantay you also stay! You will compete for one more week!")
                     keep_going = sanitised_input("How intense! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
             counter += 1
-
-    '''
-    s4_preset_COPY = announceWinner(s4_preset_contest_obj, parsedQueens[0])
-    for i in range(0, len(s4_preset_COPY)):
-        currentQueen = s4_preset_COPY[i]
-        print(currentQueen.name, ": ", currentQueen.winCt)
-    '''
+            if(counter == len(s4_challenges)):
+               break
     
 # Print remaining contestants' names
 def printRemaining(contest_obj):
@@ -539,11 +536,21 @@ def deleteQueen(name, contest_obj):
             break
     return contest_obj
 
-def musicVideoTimeNonElim():
+def musicVideoTimeNonElim(currLipsync):
     keep_going = sanitised_input("In the end, the 3 remaining Queens have to lipsync for their lives. [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
+    print("The Queens faced off to the lipsync of the week:", currLipsync)
     keep_going = sanitised_input("However, they were all lucky, and were told they all moved onto the Grand Finale! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
+
+def grandFinaleTwoRU(testQueenObj, finalChallenge):
+    keep_going = sanitised_input("The Final 3 Queens are set to meet their fates. [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
+    printRemaining(testQueenObj)
+    finalistDict = {}
+    for i in range(0, countRemaining(testQueenObj)):
+        finalistDict[testQueenObj[i].name] = [testQueenObj[i].winCt, testQueenObj.lipsyncCt]
+        print(testQueenObj[i].name, ": ", testQueenObj[i].winCt)
     
 #call main
 main()
