@@ -184,7 +184,7 @@ s5_preset_contest_obj = [ Queen("Alaska", 'A', 'B', 'B', 'B', 'A'), \
                           Queen("Penny Tration", 'D', 'C', 'C', 'C', 'B'), \
                           Queen("Roxxxy Andrews", 'A', 'B', 'B', 'B', 'C'), \
                           Queen("Serena ChaCha", 'D', 'B', 'C', 'D', 'B'), \
-                          Queen("Vivienne Pinay", 'B', 'D', 'C', 'B', 'CS') ]
+                          Queen("Vivienne Pinay", 'B', 'D', 'C', 'B', 'C') ]
 
 
 def main():
@@ -196,7 +196,7 @@ def main():
     isSafeFlag = True
     counter = 0
     print("Hello, and welcome to the Rupaul's Drag Race simulator!", \
-          "\nFor the moment, we will just be using a preset season: Season 4.\n")
+          "\nFor the moment, we will just be using a preset season: Season 5.\n")
     while(keep_going.lower() == 'y'):
         if(countRemaining(testQueenObj) < 8):
             isSafeFlag = False
