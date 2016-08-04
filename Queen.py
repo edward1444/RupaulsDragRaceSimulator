@@ -3,13 +3,6 @@
 import collections, operator, random
 from random import shuffle
 
-# Stats will be declared as floats at the moment (5 options):
-# (A) Amazing = 0.8
-# (B) Great = 0.6
-# (C) Average = 0.5
-# (D) Bad = 0.4
-# (F) Awful = 0.3
-
 class Queen:
     def __init__(self, name, sewStat, danceStat, singStat, actStat, humorStat, minWinCt = 0, winCt = 0, lipsyncCt = 0):
         self.__name = name
@@ -119,7 +112,8 @@ class TeamChallenge(Challenge):
 
 # Remember: Challenge = Name, ChallengeType, isElim
 # TeamChallenge = Name, ChallengeType, isElim, CountIndividualsOnEachTeam
-s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
+
+s4_challenges = [Challenge("RuPocalypse Now!","sew", True), \
                  TeamChallenge("WTF: Wrestling Trashiest Fighters" , "humor", True, [4,4,4]), \
                  TeamChallenge("Glamazons vs. Champions", "act", True, [5,6]), \
                  TeamChallenge("Queens Behind Bars", "act", True, [5,5]), \
@@ -133,13 +127,34 @@ s4_challenges = [ Challenge("RuPocalypse Now!","sew", True), \
                  Challenge("The Final Three", "none", False), \
                  Challenge("Reunited!", "none", False) ]
 
+s5_challenges = [Challenge("RuPaullywood or Bust", "sew", True), \
+                 TeamChallenge("Lip Synch Extravangza Eleganza", "act", True, [4,5,4]), \
+                 TeamChallenge("Draggle Rock", "act", True, [6,6]), \
+                 TeamChallenge("Black Swan, Why It Gotta Be Black?", "dance", True, [6,5]), \
+                 Challenge("Snatch Game", "humor", True), \
+                 TeamChallenge("Can I Get An Amen?", "sing", True, [3,3,3]), \
+                 Challenge("RuPaul Roast", "humor", True), \
+                 Challenge("Scent of a Drag Queen", "act", True), \
+                 TeamChallenge("Drama Queens", "act", True, [3,3]), \
+                 Challenge("Super Troopers", "sew", True), \
+                 Challenge("Sugar Ball", "sew", True), \
+                 Challenge("The Final Three, Hunty", "none", False), \
+                 Challenge("Reunited!", "none", False) ]
+
 s4_lipsyncs = ["Britney Spears - Toxic", "Donna Summer - Bad Girls", \
                 "Natalie Cole - This Will Be (An Everlasting Love", "Pink - Trouble", \
                 "Madonna - Vogue", "Lady Gaga - Born This Way", "Pam Tillis - Mi Vida Loca (My Crazy Life)",
-                "Marta Wash & RuPaul - It's Raining Men (The Sequel)", \
+                "Martha Wash & RuPaul - It's Raining Men (The Sequel)", \
                 "Gladys Knight - I've Got to Use My Imagination", \
                 "Aretha Franklin - You Make Me Feel Like a Natural Woman", \
                 "Wynonna Judd - No One Else on Earth", "RuPaul - Glamazon"]
+
+s5_lipsyncs = ["Miley Cyrus - Party in the U.S.A", "Rihanna - Only Girl in the World", \
+                "The Pussycat Dolls - When I Grow Up", "Britney Spears - Oops!...I Did it Again", \
+                "Cher - Take Me Home", "The Pointer Sisters - I'm So Excited", \
+                "Willow Smith - Whip My Hair", "Gwen Guthrie - Ain't Nothing Goin' on But the Rent" \
+                "Paula Abdul - Cold Hearted", "Seduction - (It Takes) Two to Make it Right", \
+                "Yma Sumac - Malambo No. 1", "RuPaul - The Beginning" ]
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
 s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
@@ -156,9 +171,27 @@ s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
                           Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B'), \
                           Queen("Willam", 'B', 'B', 'A', 'A', 'A') ]
 
+s5_preset_contest_obj = [ Queen("Alaska", 'A', 'B', 'B', 'B', 'A'), \
+                          Queen("Alyssa Edwards", 'B', 'A', 'C', 'C', 'B'), \
+                          Queen("Coco Montrese", 'B', 'A', 'C', 'C', 'B'), \
+                          Queen("Detox", 'B', 'B', 'B', 'A', 'B'), \
+                          Queen("Honey Mahogany", 'C', 'D', 'B', 'B', 'C'), \
+                          Queen("Ivy Winters", 'B', 'C', 'B', 'B', 'B'), \
+                          Queen("Jade Jolie", 'C', 'C', 'C', 'B', 'B'), \
+                          Queen("Jinkx Monsoon", 'C', 'B', 'A', 'A', 'A'), \
+                          Queen("Lineysha Sparx", 'A', 'B', 'C', 'C', 'C'),
+                          Queen("Monica Beverly Hillz", 'C', 'B', 'C', 'D', 'C'), \
+                          Queen("Penny Tration", 'D', 'C', 'C', 'C', 'B'), \
+                          Queen("Roxxxy Andrews", 'A', 'B', 'B', 'B', 'C'), \
+                          Queen("Serena ChaCha", 'D', 'B', 'C', 'D', 'B'), \
+                          Queen("Vivienne Pinay", 'B', 'D', 'C', 'B', 'CS') ]
+
+
 def main():
     keep_going = 'y'
-    testQueenObj = s4_preset_contest_obj
+    testQueenObj = s5_preset_contest_obj
+    testChallengeObj = s5_challenges
+    testLipsyncs = s5_lipsyncs
     loserQueens = [] * len(testQueenObj)
     isSafeFlag = True
     counter = 0
@@ -174,34 +207,36 @@ def main():
             print("Alright, beat it Queen!")
             break
         else:
-            print("This week's Challenge will be:", s4_challenges[counter].name)
-            if((counter == len(s4_challenges) - 2) and s4_challenges[counter].isElim == False):
+            print("This week's Challenge will be:", testChallengeObj[counter].name)
+            if((counter == len(testChallengeObj) - 2) and testChallengeObj[counter].isElim == False):
                 print("The Final 3 are set to compete in Rupaul's new music video!")
-                musicVideoTimeNonElim(s4_lipsyncs[counter])
-            elif(counter == len(s4_challenges) - 1):
-                grandFinaleTwoRU(testQueenObj, s4_challenges[counter])
+                musicVideoTimeNonElim(testChallengeObj[counter])
+            elif(counter == len(testChallengeObj) - 1):
+                lastChunk = grandFinaleTwoRU(testQueenObj, testChallengeObj[counter])
+                for chunk in lastChunk:
+                    loserQueens.append(chunk)
             else:
                 keep_going = sanitised_input("Time to move forward to the Mini-Challenge! [y to continue]: ", \
                                             str.lower, range_ = ('y','Y'))
                 testQueenObj = miniChallenge(testQueenObj)
                 keep_going = sanitised_input("Time to move forward to the Main-Challenge! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-                if(type(s4_challenges[counter]) is TeamChallenge):
+                if(type(testChallengeObj[counter]) is TeamChallenge):
                     keep_going = sanitised_input("This week is a Team Challenge, so teams must be formed! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-                    teamQueenList = sortIntoTeams(testQueenObj, s4_challenges[counter].countIndiv)
-                    print("These are the teams for the week:")
+                    teamQueenList = sortIntoTeams(testQueenObj, testChallengeObj[counter].countIndiv)
+                    print("These are the teams for the week:\n")
                     for i in range(0, len(teamQueenList)):
                         print("On Team ", i + 1, ":", sep = "")
                         currTeam = teamQueenList[i]
                         for currMem in range(0, len(currTeam)):
                             print(currTeam[currMem])
                         print("\n")
-                    totalScores = teamMainChallenge(testQueenObj, s4_challenges[counter], teamQueenList)
+                    totalScores = teamMainChallenge(testQueenObj, testChallengeObj[counter], teamQueenList)
                     parsedResults = processTeamTopBottomSafe(teamQueenList, totalScores, isSafeFlag)
                 else:
                     print("We are now calculating the Performance of each of the Queens!")
-                    results = mainChallenge(testQueenObj, s4_challenges[counter])
+                    results = mainChallenge(testQueenObj, testChallengeObj[counter])
                     sortedResults = sorted(results.items(), key = operator.itemgetter(1))
                     parsedResults = processTopBottomSafe(sortedResults, isSafeFlag)
                     keep_going = sanitised_input("Now we must calculate the Runway Scores! [y to continue]: ", \
@@ -216,23 +251,29 @@ def main():
                 keep_going = sanitised_input("Time to announce the Bottom 2! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
                 announceBottomQueens(parsedResults[2])
-                print("The Queens faced off to the lipsync of the week:", s4_lipsyncs[counter])
+                print("The Queens faced off to the lipsync of the week:", testLipsyncs[counter])
                 keep_going = sanitised_input("The lipsync was intense, but the Queens showed no mercy! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-                loser = lipsync(testQueenObj,parsedResults[2])
-                if(s4_challenges[counter].isElim):
-                    print(loser, ",sashay away.", sep = "")
-                    loserObj = getQueenObjFromName(testQueenObj, loser)
+                # Remember: lipsync function returns a list, with the savedQueen as the first member and the loser
+                # as the second member
+                btmList = lipsync(testQueenObj,parsedResults[2])
+                loserObj = getQueenObjFromName(testQueenObj, btmList[1])
+                survObj = getQueenObjFromName(testQueenObj, btmList[0])
+                survObj.lipsyncCt += 1
+                loserObj.lipsyncCt += 1
+                if(testChallengeObj[counter].isElim):
+                    print(btmList[1], ",sashay away.", sep = "")
                     loserQueens.append(loserObj)
-                    testQueenObj = deleteQueen(loser, testQueenObj)
+                    testQueenObj = deleteQueen(btmList[1], testQueenObj)
                 else:
-                    print(loser, ", shantay you also stay! You will compete for one more week!")
+                    print(btmList[1], ", shantay you also stay! You will compete for one more week!")
                     keep_going = sanitised_input("How intense! [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
             counter += 1
-            if(counter == len(s4_challenges)):
+            if(counter == len(testChallengeObj)):
+               runFinalStats(loserQueens)
                break
-    
+
 # Print remaining contestants' names
 def printRemaining(contest_obj):
     for i in range(0, len(contest_obj)):
@@ -241,6 +282,12 @@ def printRemaining(contest_obj):
 # Count the length of the contestant object list, returns int
 def countRemaining(contest_obj):
     return len(contest_obj)
+
+# returns the Queen object by identifying it by their name
+def getQueenObjFromName(contest_obj, name):
+    for i in range(0, countRemaining(contest_obj)):
+        if(contest_obj[i].name == name):
+            return contest_obj[i]
 
 # Pick a random winner for the mini-challenge, the reason it is random
 # is because in the show, the mini-challenge doesn't affect the Queen's overall weekly score
@@ -300,14 +347,15 @@ def sortIntoTeams(contest_obj, numTeams):
 
 # calculate general ranking based off the type of challenge presented this week
 # returns a unordered dictionary with the Queen's name as the key and their score as the value
-def mainChallenge(contest_obj,curr_challenge_obj):
+def mainChallenge(contest_obj, challenge_obj):
     # So I guess the plan is to figure out a way to rank the Queens based on their performances
     # Each week, there's a certain number of Queens who are safe, and those who are on the top-bottom
     queenPerformanceList = {}
     for i in range(0, countRemaining(contest_obj)):
         currentQueen = contest_obj[i]
-        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, curr_challenge_obj.challengeType)
-        # Now that we have all the queen's performances for the main challenge, we should add additional points for the runway
+        queenPerformanceList[currentQueen.name] = getQueenPerformance(currentQueen, challenge_obj.challengeType)
+        # Now that we have all the queen's performances for the main challenge,
+        # we should add additional points for the runway
         runwayScore = stat_to_float(currentQueen.sewStat)
         queenPerformanceList[currentQueen.name] += runwayScore
     return queenPerformanceList
@@ -327,6 +375,12 @@ def getQueenPerformance(currentQueen, challengeType):
     randPerformance = random.uniform(stat_to_float(specifiedStat), stat_to_float(specifiedStat) + 1)
     return randPerformance
 
+# Stats will be declared as floats at the moment (5 options):
+# (A) Amazing = 0.8
+# (B) Great = 0.6
+# (C) Average = 0.5
+# (D) Bad = 0.4
+# (F) Awful = 0.3
 def stat_to_float(specifiedStat):
     return {
             'A' : 0.8,
@@ -351,7 +405,7 @@ def teamMainChallenge(contest_obj, curr_team_challenge_obj, teamQueenList):
         # now search for the current Queen in the current Team in the performance list
         for currentMem in currentTeam:
             # print(currentMem, "\n")
-            teamTotalScores[counter] = teamTotalScores[counter] + findQueen(currentMem, queenPerformanceList)
+            teamTotalScores[counter] += findQueen(currentMem, queenPerformanceList)
         counter += 1
         # print("-----------------------")
     """
@@ -407,7 +461,6 @@ def processTopBottomSafe(cList, containSafe):
     safeQueens = []
     bottomQueens = []
     parseTopBtm = nittyGritty(len(cList))
-
     for i in range(parseTopBtm[1] - 1, -1, -1):
         bottomQueens.append(cList[i][0])
         del cList[i]
@@ -451,7 +504,7 @@ def announceBottomQueens(bottomQueens):
     print(bottomQueens[1], ", I'm sorry my dear but you are up for elimination.")
     if(len(bottomQueens) > 2):
         print(bottomQueens[0], ",you,")
-        for count in range(0,5):
+        for count in range(0,2):
             keep_going = sanitised_input(". [y to continue]: ", \
             str.lower, range_ = ('y','Y'))
         keep_going = sanitised_input("are safe. [y to continue]: ", \
@@ -460,11 +513,6 @@ def announceBottomQueens(bottomQueens):
     else:
         print(bottomQueens[0], ", I'm sorry my dear but you are also up for elimination.")
 
-def getQueenObjFromName(contest_obj, name):
-    for i in range(0, countRemaining(contest_obj)):
-        if(contest_obj[i].name == name):
-            return contest_obj[i]
-
 # For the actual lipsync, the bottom 2 queens must lipsync for their lives to impress Ru
 # as this is their last chance to save themselves from elimination
 # The rules are: both the Queens' danceStat is used to generate a random number between
@@ -472,65 +520,40 @@ def getQueenObjFromName(contest_obj, name):
 # the winCt will help them, giving them an extra .3 for every win to their final score
 # their lipsyncCt will harm them, giving them a minus .25 for every previous lipsync to their final score
 # the highest of the scores will be safe, and the other is declared the eliminated Queen
-
-# TODO: find a way to try and access the object again without having to do it through the lipsync function
-# maybe write a seperate search function ?
-# or rewrite how you pass parameters to the function
+# returns a list with the savedQueen as the first member and the loserQueen as the next member
 def lipsync(contest_obj, bottomQueens):
-    bottomStats = []
     elimQueen = ""
     savedQueen = ""
-    # TODO: Figure out how to make these 2 for loops merge into one, to find both names
-    # of the bottom 2 queens
-    # UPDATE: oh wait shit
-    for i in range(0, len(contest_obj)):
-        currentQueen = contest_obj[i]
-        if(currentQueen.name == bottomQueens[len(bottomQueens) - 1] ):
-            bottomStats.append([currentQueen.name, currentQueen.danceStat, currentQueen.winCt, currentQueen.lipsyncCt])
-    for i in range(0, len(contest_obj)):
-        currentQueen = contest_obj[i]
-        if(currentQueen.name == bottomQueens[len(bottomQueens) - 2] ):
-            bottomStats.append([currentQueen.name, currentQueen.danceStat, currentQueen.winCt, currentQueen.lipsyncCt])
+    queen1 = getQueenObjFromName(contest_obj, bottomQueens[len(bottomQueens) - 1])
+    queen2 = getQueenObjFromName(contest_obj, bottomQueens[len(bottomQueens) - 2])
+
     """
     # Debug code
     for i in range(0, len(bottomStats)):
         for j in range(0, len(bottomStats[i])):
             print(bottomStats[i][j])
     """
-    
-    baseOut = { bottomStats[0][0] : random.uniform(stat_to_float(bottomStats[0][1]), stat_to_float(bottomStats[0][1]) + 1) ,
-                bottomStats[1][0] : random.uniform(stat_to_float(bottomStats[1][1]), stat_to_float(bottomStats[1][1]) + 1)
-    }
+    baseOut = { queen1.name : random.uniform(stat_to_float(queen1.danceStat), stat_to_float(queen1.danceStat) + 1) ,
+                queen2.name : random.uniform(stat_to_float(queen2.danceStat), stat_to_float(queen2.danceStat) + 1) }
 
-    """
-    for key in baseOut:
-        print(key, baseOut[key])
-    """
     # an attempt to implement the said pluses and minuses lel
+    baseOut[queen1.name] = baseOut[queen1.name] + (.25 * queen1.winCt) - (.3 * queen1.lipsyncCt)
+    baseOut[queen2.name] = baseOut[queen2.name] + (.25 * queen2.winCt) - (.3 * queen2.lipsyncCt)
 
-    baseOut[bottomStats[0][0]] = baseOut[bottomStats[0][0]] + (.25 * bottomStats[0][2]) - (.3 * bottomStats[0][3])
-    baseOut[bottomStats[1][0]] = baseOut[bottomStats[1][0]] + (.25 * bottomStats[1][2]) - (.3 * bottomStats[1][3])
-
-    """
-    for key in baseOut:
-        print(key, baseOut[key])
-    """
-
-    if(baseOut[bottomStats[0][0]] < baseOut[bottomStats[1][0]]):
-        elimQueen = bottomStats[0][0]
-        savedQueen = bottomStats[1][0]
+    if(baseOut[queen1.name] < baseOut[queen2.name]):
+        elimQueen = queen1.name
+        savedQueen = queen2.name
     else:
-        elimQueen = bottomStats[1][0]
-        savedQueen = bottomStats[0][0]
+        elimQueen = queen2.name
+        savedQueen = queen1.name
 
     keep_going = sanitised_input("Ladies, I've made my decision. [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
     print(savedQueen, ",shantay, you stay.", sep = "")
-    return elimQueen
+    return [savedQueen,elimQueen]
 
 def deleteQueen(name, contest_obj):
     for i in range(0, countRemaining(contest_obj)):
-        currentQueen = contest_obj[i]
         if(name == contest_obj[i].name):
             del contest_obj[i]
             break
@@ -544,13 +567,33 @@ def musicVideoTimeNonElim(currLipsync):
                                             str.lower, range_ = ('y', 'Y'))
 
 def grandFinaleTwoRU(testQueenObj, finalChallenge):
+    finalistDict = {}
+    sortedFinalList = []
+    for i in range(0, countRemaining(testQueenObj)):
+        finalistDict[testQueenObj[i].name] = testQueenObj[i].winCt
+
+    winner = max(finalistDict.items(), key=operator.itemgetter(1))[0]
+
+    for i in range(0, countRemaining(testQueenObj)):
+        if(testQueenObj[i].name != winner):
+            sortedFinalList.append(testQueenObj[i])
+    sortedFinalList.append(getQueenObjFromName(testQueenObj, winner))
+
     keep_going = sanitised_input("The Final 3 Queens are set to meet their fates. [y to continue]: ", \
                                             str.lower, range_ = ('y', 'Y'))
-    printRemaining(testQueenObj)
-    finalistDict = {}
-    for i in range(0, countRemaining(testQueenObj)):
-        finalistDict[testQueenObj[i].name] = [testQueenObj[i].winCt, testQueenObj.lipsyncCt]
-        print(testQueenObj[i].name, ": ", testQueenObj[i].winCt)
-    
+    keep_going = sanitised_input("And the winner of Rupaul's Drag Race is... [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
+    print(winner, "!", sep = "")
+    keep_going = sanitised_input("Congradulations to our new Season Winner!!. [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
+    keep_going = sanitised_input("Thanks for playing my little simulator!! [y to continue]: ", \
+                                            str.lower, range_ = ('y', 'Y'))
+    return sortedFinalList
+
+def runFinalStats(loserQueens):
+    for i in range(0, len(loserQueens)):
+        print(loserQueens[i].name, "\nNumber of Mini-Challenges wins:", loserQueens[i].minWinCt, \
+              "\nNumber of Main-Challenge Wins:", loserQueens[i].winCt, "\nNumber of times lipynced:", loserQueens[i].lipsyncCt)
+
 #call main
 main()
