@@ -139,7 +139,7 @@ s5_challenges = [Challenge("RuPaullywood or Bust", "sew", True), \
                  Challenge("Super Troopers", "sew", True), \
                  Challenge("Sugar Ball", "sew", True), \
                  Challenge("The Final Three, Hunty", "none", False), \
-                 Challenge("Reunited!", "none", False) ]
+                 Challenge("Reunited!", "none", False) 
 
 s4_lipsyncs = ["Britney Spears - Toxic", "Donna Summer - Bad Girls", \
                 "Natalie Cole - This Will Be (An Everlasting Love", "Pink - Trouble", \
@@ -149,27 +149,26 @@ s4_lipsyncs = ["Britney Spears - Toxic", "Donna Summer - Bad Girls", \
                 "Aretha Franklin - You Make Me Feel Like a Natural Woman", \
                 "Wynonna Judd - No One Else on Earth", "RuPaul - Glamazon"]
 
-s5_lipsyncs = ["Miley Cyrus - Party in the U.S.A", "Rihanna - Only Girl in the World", \
-                "The Pussycat Dolls - When I Grow Up", "Britney Spears - Oops!...I Did it Again", \
+s5_lipsyncs = ["Miley Cyrus - Party in the U.S.A", "Rihanna - Only Girl in the World", \                "The Pussycat Dolls - When I Grow Up", "Britney Spears - Oops!...I Did it Again", \
                 "Cher - Take Me Home", "The Pointer Sisters - I'm So Excited", \
                 "Willow Smith - Whip My Hair", "Gwen Guthrie - Ain't Nothing Goin' on But the Rent" \
                 "Paula Abdul - Cold Hearted", "Seduction - (It Takes) Two to Make it Right", \
                 "Yma Sumac - Malambo No. 1", "RuPaul - The Beginning" ]
 
 # Remember: Queen = Name, Sew, Dance, Sing, Act, Humor
-s4_preset_contest_obj = [ Queen("Alisa Summers", 'F', 'D', 'C', 'C', 'C'), \
-                          Queen("Chad Michaels", 'B', 'B', 'B', 'B', 'B'), \
-                          Queen("DiDa Ritz", 'C', 'A', 'C', 'B', 'C'), \
-                          Queen("Jiggly Caliente", 'F', 'A', 'C', 'C', 'B'), \
-                          Queen("Kenya Michaels", 'B', 'A', 'C', 'D', 'B'), \
-                          Queen("Lashauwn Beyond", 'A', 'D', 'C', 'B', 'C'), \
-                          Queen("Latrice Royale", 'B', 'A', 'A', 'B', 'A'), \
-                          Queen("Madame LaQueer", 'C', 'D', 'C', 'D', 'C'),
-                          Queen("Milan", 'C', 'A', 'C', 'C', 'C'), \
-                          Queen("Phi Phi O'Hara", 'B', 'A', 'B', 'C', 'B'), \
-                          Queen("The Princess", 'B', 'C', 'C', 'D', 'C'), \
-                          Queen("Sharon Needles", 'A', 'B', 'B', 'B', 'B'), \
-                          Queen("Willam", 'B', 'B', 'A', 'A', 'A') ]
+s4_preset_contest_obj = [ Queen("Edward", 'F', 'D', 'C', 'C', 'C'), \
+                          Queen("Eilish", 'B', 'B', 'B', 'B', 'B'), \
+                          Queen("Becky", 'C', 'A', 'C', 'B', 'C'), \
+                          Queen("Georgia", 'F', 'A', 'C', 'C', 'B'), \
+                          Queen("Mary", 'B', 'A', 'C', 'D', 'B'), \
+                          Queen("Liv", 'A', 'D', 'C', 'B', 'C'), \
+                          Queen("Sammy", 'B', 'A', 'A', 'B', 'A'), \
+                          Queen("Michael", 'C', 'D', 'C', 'D', 'C'),
+                          Queen("Sean", 'C', 'A', 'C', 'C', 'C'), \
+                          Queen("Stacey", 'B', 'A', 'B', 'C', 'B'), \
+                          Queen("Claudia", 'B', 'C', 'C', 'D', 'C'), \
+                          Queen("Klaudia", 'A', 'B', 'B', 'B', 'B'), \
+                          Queen("Grace", 'B', 'B', 'A', 'A', 'A') ]
 
 s5_preset_contest_obj = [ Queen("Alaska", 'A', 'B', 'B', 'B', 'A'), \
                           Queen("Alyssa Edwards", 'B', 'A', 'C', 'C', 'B'), \
